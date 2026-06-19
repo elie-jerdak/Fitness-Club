@@ -1,0 +1,198 @@
+﻿@model List<FitnessClub_Test.Dtos.ClassUtilizationDTO>
+@{
+    var classes = Model.Select(c => c.ClassName).Distinct().ToList();
+}
+<style>
+    .data {
+        text-align: center;
+    }
+
+    #chart p {
+        text-align: center;
+        margin-top: 20px;
+        color: #777;
+    }
+
+</style>
+<main class="app-main">
+    <div class="row mx-4 mt-4 d-flex" style="height:25%; background-color:lightcoral;border-radius:5px;align-items:center;justify-content:space-between">
+        <div style="width:70%;border-right:3px solid white; ">
+            <h1 style="color:white">Class Utilization Rate</h1>
+        </div>
+        <div class="w-25">
+            <h5 style="color:white">Reporting Year: @DateTime.Now.Year</h5>
+            <h5 style="color:white">Reporting Month: @DateTime.Now.ToString("MMMM")</h5>
+        </div>
+    </div>
+
+    <div class="row mx-4 my-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div id="chart"></div>
+                </div>
+            </div>
+        </div>  
+        <div class="col">
+            <h3 class="mt-4">Detailed Overview</h3>
+            <hr style="background-color:lightcoral; height: 3px; border: none;" />
+            <table class="table-responsive mt-4 w-100">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="data" style="background-color:lightgrey">Attendance</th>
+                        <th class="data" style="background-color:lightgrey">Capacity</th>
+                        <th class="data" style="background-color:lightcoral">Utilization Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4" style="background-color:#fad8d8;font-weight:bold">Class</td>
+                    </tr>
+
+                    @if (Model == null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center;">
+                                <p>No data available</p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var className in classes)
+                        {
+                            var classData = Model.FirstOrDefault(c => c.ClassName == className);
+
+                            <tr>
+                                <td style="text-align:end">@className</td>
+                                <td class="data">@((classData?.Attendance) ?? 0)</td>
+                                <td class="data">@((classData?.Capacity) ?? 0)</td>
+                                <td class="data" style="background-color:lightgrey">
+                                    @($"{Math.Round(classData?.UtilizationRate ?? 0, 1)}%")
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+</main>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        const token = window.authToken;
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+
+                const response = await fetch('https://localhost:7100/api/report-charts/ClassUtilizationRate', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                // 🔥 STATUS CODE HANDLING
+                if (response.status === 401) {
+                    if (response.status === 401) {
+                        window.location.href = "/Login/Bridge";
+                        return;
+                    }
+                }
+
+                if (response.status === 403) {
+                    throw new Error("Forbidden: You do not have access to this data.");
+                }
+
+                if (response.status === 404) {
+                    throw new Error("Data not found.");
+                }
+
+                if (response.status >= 500) {
+                    throw new Error("Server error. Please try again later.");
+                }
+
+                if (!response.ok) {
+                    throw new Error("Unexpected error occurred.");
+                }
+
+                const data = await response.json();
+
+                if (!data || data.length === 0) {
+                    document.querySelector("#chart").innerHTML = "<p>No Data Available</p>";
+                    return;
+                }
+
+                const classNames = [];
+                const Attendance = [];
+                const Capacities = [];
+                const utilizationRates = [];
+
+                data.forEach(item => {
+                    classNames.push(item.className);
+                    Attendance.push(item.attendance);
+                    Capacities.push(item.capacity);
+                    utilizationRates.push(parseFloat(item.utilizationRate));
+                });
+
+                const options = {
+                    series: [
+                        {
+                            name: 'Attendance',
+                            type: 'column',
+                            data: Attendance,
+                        },
+                        {
+                            name: 'Capacity',
+                            type: 'column',
+                            data: Capacities,
+                        },
+                        {
+                            name: 'Utilization Rate',
+                            data: utilizationRates,
+                        }
+                    ],
+                    chart: {
+                        type: 'line'
+                    },
+                    xaxis: {
+                        categories: classNames
+                    },
+                    yaxis: [
+                        {
+                            title: { text: 'Attendance / Capacity' },
+                            seriesName: ['Attendance','Capacity'],
+                            opposite: false
+                        },
+                        {
+                            title: { text: 'Utilization Rate (%)' },
+                            seriesName: 'Utilization Rate',
+                            opposite: true,
+                            min: 0
+                        }
+                    ],
+                    tooltip: {
+                        shared: true
+                    }
+                };
+
+                new ApexCharts(document.querySelector("#chart"), options).render();
+
+            } catch (error) {
+
+                console.error("Chart error:", error);
+
+                document.querySelector("#chart").innerHTML = `
+                    <div style="text-align:center;color:red;margin-top:20px;">
+                        ${error.message}
+                    </div>
+                `;
+            }
+        });
+    </script>
+}

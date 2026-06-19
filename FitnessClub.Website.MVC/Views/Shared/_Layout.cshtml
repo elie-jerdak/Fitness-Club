@@ -1,0 +1,236 @@
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Fitness Club</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FitnessClub.Website.MVC.styles.css" asp-append-version="true" />
+    <link rel="manifest" href="~/site.webmanifest" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/img/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/slicknav.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/flaticon.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/gijgo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animate.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animated-headline.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/fontawesome-all.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/themify-icons.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/slick.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/nice-select.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+</head>
+
+<body class="black-bg">
+
+    <!-- Preloader -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <h2 style="color: rgb(234, 15, 15);">Fitness</h2>
+                    <h2 style="color: rgb(234, 15, 15);">Club</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative"></div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        @if (TempData["ToastMessage"] != null)
+        {
+            var toastType = TempData["ToastType"]?.ToString() ?? "info";
+            var toastTitle = toastType switch
+            {
+                "success" => "Success",
+                "danger" => "Error",
+                "warning" => "Warning",
+                "info" => "Info",
+                _ => "Notification"
+            };
+            <div class="toast show shadow-sm border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-@toastType text-white">
+                    <strong class="me-auto">@toastTitle</strong>
+                    <small class="text-white-50">Just now</small>
+                    <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["ToastMessage"]
+                </div>
+            </div>
+        }
+    </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-area header-transparent">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <div class="logo">
+                            <a asp-controller="Home" asp-action="Index">
+                                <h1>Fitness Club</h1>
+                            </a>
+                        </div>
+                        <div class="main-menu f-right d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                    <li>
+                                        <a href="#">Services</a>
+                                        <ul class="submenu">
+                                            <li><a asp-controller="Services" asp-action="Classes">Classes</a></li>
+                                            <li><a asp-controller="Services" asp-action="Premade">Pre-made Programs</a>
+                                            </li>
+                                            <li><a asp-controller="Services" asp-action="Private">Private Booking</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a asp-controller="Subscription" asp-action="Index">Subscription</a></li>
+                                    <li><a asp-controller="Crowd" asp-action="Index">Crowd</a></li>
+                                    @if (Context.Session.GetString("JWToken") == null)
+                                    {
+                                        <li><a asp-controller="Account" asp-action="Register">Log In</a></li>
+                                    }
+                                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                    @if (Context.Session.GetString("JWToken") != null)
+                                    {
+                                        <li><a asp-controller="Account" asp-action="Profile">My Profile</a></li>
+                                        }
+
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="header-btns d-none d-lg-block f-right">
+                            <a asp-controller="Home" asp-action="Contact" class="btn">Contact me</a>
+                        </div>
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-area black-bg">
+            <div class="container">
+                <div class="footer-top footer-padding">
+                    <div class="row">
+                        <div class="col-xl-12 text-center">
+                            <div class="footer-logo">
+                                <a asp-controller="Home" asp-action="Index">
+                                    <h1>Fitness Club</h1>
+                                </a>
+                            </div>
+                            <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s"
+                                data-wow-delay=".4s">
+                                <div class="main-header main-header2">
+                                    <div class="menu-wrapper menu-wrapper2">
+
+                                        <!-- Main-menu -->
+                                        <div class="main-menu main-menu2 text-center">
+                                            <nav>
+                                                <ul>
+                                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                                    <li><a asp-controller="Services" asp-action="Classes">Services</a>
+                                                    </li>
+                                                    <li><a asp-controller="Subscription"
+                                                            asp-action="Index">Subscription</a></li>
+                                                    <li><a asp-controller="Crowd" asp-action="Index">Crowd</a></li>
+                                                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="footer-social mt-30">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom text-center">
+                    <p style="color: white;">&copy; @DateTime.Now.Year - Fitness Club. Template by <a
+                            href="https://colorlib.com">Colorlib</a>.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Up Button -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"><i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function (toastEl) {
+                var toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                toast.show();
+                return toast;
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/vendor/modernizr-3.5.0.min.js" asp-append-version="true"></script>
+    <script src="~/js/vendor/jquery-1.12.4.min.js" asp-append-version="true"></script>
+    <script src="~/js/popper.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.slicknav.min.js" asp-append-version="true"></script>
+    <script src="~/js/owl.carousel.min.js" asp-append-version="true"></script>
+    <script src="~/js/slick.min.js" asp-append-version="true"></script>
+    <script src="~/js/wow.min.js" asp-append-version="true"></script>
+    <script src="~/js/animated.headline.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.magnific-popup.js" asp-append-version="true"></script>
+    <script src="~/js/gijgo.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.nice-select.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.sticky.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.counterup.min.js" asp-append-version="true"></script>
+    <script src="~/js/waypoints.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.countdown.min.js" asp-append-version="true"></script>
+    <script src="~/js/hover-direction-snake.min.js" asp-append-version="true"></script>
+    <script src="~/js/contact.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.form.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/js/mail-script.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.ajaxchimp.min.js" asp-append-version="true"></script>
+    <script src="~/js/plugins.js" asp-append-version="true"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

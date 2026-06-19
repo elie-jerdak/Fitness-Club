@@ -1,0 +1,423 @@
+﻿@using FitnessClub_Test.Dtos
+@model CoachCreateDTO;
+@{
+
+}
+
+<main>
+    <div class="container mt-4">
+        <form asp-controller="Coach" asp-action="CreateCoach" method="post" id="createCoachForm">
+
+            @* User *@
+            <div class="row mb-4">
+                @* User Information *@
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">User Information</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="col">
+                                <div class="card-body p-md-5 text-black">
+
+                                    <!-- First Name, Last_Name -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="First_Name">First Name</label>
+                                                <input asp-for="First_Name" name="First_Name" id="First_Name" class="form-control" />
+                                                <span asp-validation-for="First_Name" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Last_Name">Last Name</label>
+                                                <input asp-for="Last_Name" name="Last_Name" id="Last_Name" class="form-control" />
+                                                <span asp-validation-for="Last_Name" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Email, Address -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Email"></label>
+                                                <input type="email" name="Email" id="Email" asp-for="Email" class="form-control" />
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Password"></label>
+                                                <input type="password" name="Password" id="Password" asp-for="Password" class="form-control" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Gender, Address-->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline mb-4">
+                                                <label asp-for="Gender"></label>
+                                                <select asp-for="Gender" name="Gender" id="Gender" asp-items="ViewBag.GenderOptions" class="form-control">
+                                                    <option value="">-- Select Gender --</option>
+                                                </select>
+                                                <span asp-validation-for="Gender" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" mb-4>
+                                            <div class="form-outline mb-4">
+                                                <label asp-for="Address"></label>
+                                                <input asp-for="Address" name="Address" id="Address" class="form-control" />
+                                                <span asp-validation-for="Address" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Phone_Number,Date_Of_Birth, Role-->
+                                    <div class="row">
+                                        <div class="col-md-4 mb-4">
+                                            <div class="form-outline mb-4">
+                                                <label asp-for="Phone_Number">Phone Number</label>
+                                                <input type="tel" name="Phone_Number" id="Phone_Number" asp-for="Phone_Number" class="form-control" />
+                                                <span asp-validation-for="Phone_Number" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 mb-4">
+                                            <div class="form-outline mb-4">
+                                                <label asp-for="DOB">Date Of Birth</label>
+                                                <input type="date" name="DOB" id="DOB" asp-for="DOB" class="form-control" />
+                                                <span asp-validation-for="DOB" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-4">
+                                            <div class="form-outline mb-4">
+                                                <label asp-for="Role"></label>
+                                                <input type="text" name="Role" id="Role" asp-for="Role" class="form-control" value="Coach" disabled />
+                                                <span asp-validation-for="Role" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                @* Profile Picture *@
+                <div class="col-4">
+                        <div class="card" style="width: 24rem;height: 34rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">Profile Photo Preview</h3>
+                            </div>
+                            <div class="card-body p-2">
+                                <!-- Fixed preview area inside the card -->
+                                <div style="width: 100%;height: 410px;overflow: hidden;border:none">
+                                    <img id="imagePreview" src="~/assets/user-profile-icon.png" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                </div>
+
+                                <div class="p-3">
+                                    <!-- Form input or other content -->
+                                    <input type="file" id="ProfileImage" accept="image/*" class="form-control" onchange="convertToBase64(event)" />
+
+                                    <input type="hidden" id="ProfileImageBase64" name="ProfileImageBase64" />
+                                    <input type="hidden" id="ProfileImageFileName" name="ProfileImageFileName" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            @* Coach *@
+            <div class="row mb-4">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Coach Information</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="col">
+                                <div class="card-body p-md-5 text-black">
+
+                                    <!-- YearsExperience, Specialty -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Specialty"></label>
+                                                <input asp-for="Specialty" name="Specialty" id="Specialty" asp-for="Role" class="form-control" />
+                                                <span asp-validation-for="Specialty" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="YearsExperience">Years Of Experience</label>
+                                                <input asp-for="YearsExperience" name="YearsExperience" id="YearsExperience" asp-for="Role" class="form-control" />
+                                                <span asp-validation-for="YearsExperience" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Target, MedicalHistory -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Salary"></label>
+                                                <input type="number" name="Salary" id="Salary" asp-for="Role" asp-for="Salary" class="form-control" />
+                                                <span asp-validation-for="Salary" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label asp-for="Bio"></label>
+                                                <input asp-for="Bio" name="Bio" id="Bio" asp-for="Role" class="form-control" />
+                                                <span asp-validation-for="Bio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                @* QR CODE *@
+                <div class="col-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">QR Code</h3>
+                            <div class="card-tools">
+                               <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                   <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                   <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                               </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                             @Html.AntiForgeryToken()
+                             
+                             <div class="d-flex justify-content-between w-100">
+                                <p class="mt-2" id="qrTypeLabel"></p>
+                                <p id="qrError" class="text-danger mt-2"></p>
+                             </div>
+                             
+                             <div id="qrDiv" class="mb-4" style="width:100%; height:auto; border:1px solid black">
+                                <img id="qrImage" src="" alt="QR Code" style="width:100%; height:auto; display:none;" />
+                                <input type="hidden" name="QrCode" asp-for="QrCode" id="QrCode" value="@Model.QrCode" />
+                                <p id="qrPlaceholder" class="text-center">
+                                    No QR code generated yet.
+                                </p>
+                             </div>
+                             
+                             <button type="button" class="btn btn-primary w-100" id="generateQrBtn">
+                                           Create QR Code
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            @* button *@
+            <div class="row d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary w-50 mb-4">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+@* Preview Image Script *@
+<script>
+    function previewImage(event) {
+        const fileInput = event.target;
+        const file = fileInput.files[0];
+        const preview = document.getElementById("imagePreview");
+
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+</script>
+
+@* QR Script*@
+<script>
+
+    // Grab the token generated by Razor
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    const Verificationtoken = tokenInput ? tokenInput.value : "";
+
+    document.getElementById("generateQrBtn").addEventListener("click", function(e) {
+    e.preventDefault();
+
+    fetch('@Url.Action("GenerateFixedQr", "Qr")', {
+        method: "POST",
+        credentials: "include", // send auth cookie
+        headers: {
+            "RequestVerificationToken": Verificationtoken
+        }
+    })
+    .then(res => {
+    // Redirected to Login or Forbidden
+    if (res.redirected) {
+        window.location.href = res.url;
+        return;
+    }
+
+    return res.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+
+        // Show QR
+        const img = document.getElementById("qrImage");
+        const placeholder = document.getElementById("qrPlaceholder");
+        const QrCode = document.getElementById("QrCode");
+
+        QrCode.value = data.qrToken
+        img.src = data.qrCodeBase64; // or data.qrCodeUrl
+        img.style.display = "block";
+
+        placeholder.style.display = "none";
+        });
+    });
+</script>
+@* Converting Photo to Base64 *@
+<script>
+    let base64Image = null;
+    let imageFileName = null;
+
+    function convertToBase64(event) {
+        try{
+
+        const file = event.target.files[0];
+        if (!file) {
+            base64Image = null;
+            imageFileName = null;
+            return;
+        }
+        imageFileName = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            base64Image = e.target.result.split(",")[1]; // Remove data prefix
+            console.log("Base64 string ready", base64Image);
+
+            // Optionally, set to a hidden input to submit with the form
+            document.getElementById("ProfileImageBase64").value = base64Image;
+            document.getElementById("ProfileImageFileName").value = imageFileName;
+        };
+        reader.readAsDataURL(file);
+
+        // Also update preview
+        const preview = document.getElementById("imagePreview");
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        } catch (err){
+            console.log("Error resulting from convertToBase64 : ", err);
+        }
+    }
+</script>
+
+@* Sending Data to MVC *@
+<script>
+    document.getElementById("createCoachForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        try {
+            const form = e.target;
+
+            const dto = {
+
+                First_Name: form.querySelector('[name="First_Name"]').value,
+                Last_Name: form.querySelector('[name="Last_Name"]').value,
+                Email: form.querySelector('[name="Email"]').value,
+                Password: form.querySelector('[name="Password"]').value,
+                Gender: form.querySelector('[name="Gender"]').value,
+                Address: form.querySelector('[name="Address"]').value,
+                Phone_Number: form.querySelector('[name="Phone_Number"]').value,
+                DOB: form.querySelector('[name="DOB"]').value,
+                Role: form.querySelector('[name="Role"]').value,
+                QrCode: form.querySelector('[name="QrCode"]').value,
+
+                Salary:form.querySelector('[name="Salary"]').value,
+                Bio:form.querySelector('[name="Bio"]').value,
+                YearsExperience:form.querySelector('[name="YearsExperience"]').value,
+                Specialty:form.querySelector('[name="Specialty"]').value,
+
+                ProfileImageBase64: document.getElementById("ProfileImageBase64").value,
+                ProfileImageFileName: document.getElementById("ProfileImageFileName").value
+            };
+
+            console.log("Submitting Coach Dto:", dto);
+
+            const response = await fetch(form.action, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken":
+                        document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(dto)
+            });
+
+            if (response.ok) {
+                window.location.href = "/Coach/Index";
+            } else {
+                // ERROR
+                const result = await response.json();
+        
+                if (result.errors) {
+                    for (const field in result.errors) {
+                        const span = document.querySelector(
+                            `[data-valmsg-for="${field}"]`
+                        );
+        
+                        if (span) {
+                            span.innerText = result.errors[field][0];
+                        }
+                    }
+                } else if (result.message) {
+                    alert(result.message);
+                }
+            }
+        } catch (err) {
+            console.error("Submit error:", err);
+            alert("Unexpected error occurred.");
+        }
+    });
+</script>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

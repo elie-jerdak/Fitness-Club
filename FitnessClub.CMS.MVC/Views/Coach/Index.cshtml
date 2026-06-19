@@ -1,0 +1,135 @@
+﻿@model IEnumerable<FitnessClub_Test.Dtos.CoachDTO>
+@{
+
+}
+<head>
+    <link rel="stylesheet" href="/css/Coach.css" />
+</head>
+<!--begin::App Main-->
+<main class="app-main">
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+
+            <!--begin: Row -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <!--begin Coach View-->
+                    <div class="card mb-4">
+                        <form asp-controller="Coach" asp-action="BulkDelete" method="post">
+                            <div class="card-header">
+                                <div class="card-custom">
+                                    <div class="form-check d-flex">
+                                        <input class="form-check-input mt-2" style="float:left" type="checkbox" id="checkAll">
+                                        <a asp-controller="Coach" asp-action="Create" class="btn btn-primary" style="margin-left:2rem;">Create</a> 
+                                        <button type="submit" class="btn btn-danger a-custom" id="delete-all-btn"><i class="bi bi-trash"></i> Delete</button>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mt-2">Coach List</h5>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table m-0">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:5%"></th>
+                                                    <th>User ID</th>
+                                                    <th>Full Name</th>
+                                                    <th>Specialty</th>
+                                                    <th>Years Of Experience</th>
+                                                    <th>Salary</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td><input type="checkbox" value="@item.UserID" name="selectedIds" class="form-check-input item-checkbox" style="margin-left:1rem" /></td>
+                                                        <td class ="clickable-row" data-href="@Url.Action("Details", "Coach", new { userId  = item.UserID })" style="cursor:pointer;">@item.UserID</td>
+                                                        <td class="clickable-row" data-href="@Url.Action("Details", "Coach", new { userId  = item.UserID })" style="cursor:pointer;">@item.FullName</td>
+                                                        <td class="clickable-row" data-href="@Url.Action("Details", "Coach", new { userId  = item.UserID })" style="cursor:pointer;">@item.Specialty</td>
+                                                        <td class="clickable-row" data-href="@Url.Action("Details", "Coach", new { userId  = item.UserID })" style="cursor:pointer;">@item.YearsExperience</td>
+                                                        @*Remember to make it nullable*@
+                                                        <td class="clickable-row" data-href="@Url.Action("Details", "Coach", new { userId = item.UserID })" style="cursor:pointer;">@item.Salary</td>
+                                                        <td>
+                                                            <div class="w-100 btn-group" role="group">
+                                                                <a asp-controller="Coach" asp-action="Edit" asp-route-UserID="@item.UserID"
+                                                                   class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i> Edit</a>
+                                                                <a asp-controller="Coach" asp-action="Delete" asp-route-UserID="@item.UserID"
+                                                                   class="btn btn-danger mx-2"><i class="bi bi-trash"></i> Delete Coach</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.table-responsive -->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                        </form>
+                        <!-- ./card-body -->
+                    </div>
+                    <!-- end Coach View -->
+                </div>
+            </div>
+            <!--end:: Row -->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
+</main>
+<!--end::App Main-->
+
+<script>
+    const checkAll = document.getElementById('checkAll');
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    const deleteButton = document.getElementById('delete-all-btn');
+
+    function updateRowHighlight(checkbox) {
+      const row = checkbox.closest('tr');
+      row.classList.toggle('table-active', checkbox.checked);
+    }
+
+    function updateDeleteButton() {
+      const checkedCount = document.querySelectorAll('.item-checkbox:checked').length;
+      deleteButton.style.display = checkedCount >= 2 ? 'inline-block' : 'none';
+    }
+
+    // Handle individual checkbox changes
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        updateRowHighlight(cb);
+
+        // Update "Check All" state
+        const allChecked = [...checkboxes].every(c => c.checked);
+        checkAll.checked = allChecked;
+
+        updateDeleteButton();
+      });
+    });
+
+    // Handle "Check All" checkbox
+    checkAll?.addEventListener('change', function () {
+      const isChecked = this.checked;
+      checkboxes.forEach(cb => {
+        cb.checked = isChecked;
+        updateRowHighlight(cb);
+      });
+      updateDeleteButton();
+    });
+
+    document.querySelectorAll(".clickable-row").forEach(row => {
+        row.addEventListener("click", function () {
+            const href = this.getAttribute("data-href");
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+</script>

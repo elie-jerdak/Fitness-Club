@@ -1,0 +1,193 @@
+﻿@model FitnessClub_Test.Dtos.PremadeProgramsDTO
+<head>
+    <style>
+        label, input {
+            margin-bottom:0.5rem;
+        }
+    </style>
+    <link rel="stylesheet" href="~/css/stylecss.css">
+    @* <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/46.0.0/ckeditor5.css" crossorigin> *@
+
+</head>
+<main class="app-main">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row mx-4">
+                <form id="editForm" method="post" asp-controller="PremadePrograms" asp-action="SaveProgram">
+                    @Html.AntiForgeryToken()
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="row mb-4">
+                                <img src="@Url.Content("~/assets/" + @Model.CoverImage)" id="imagePreview" class="w-100" style="height:500px" />
+                                <button class="btn btn-primary my-4" type="button" onclick="document.getElementById('fileInput').click()">Edit Photo</button>
+
+                                <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="convertToBase64(event)" />
+
+                                <input type="hidden" id="ProfileImageBase64" name="ProfileImageBase64" />
+                                <input type="hidden" id="ProfileImageFileName" name="ProfileImageFileName" />
+                            </div>
+                            <div class="row mb-4">
+                                <label asp-for="@Model.Title"></label>
+                                <input id="Title" type="text" asp-for="@Model.Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+
+                                <label asp-for="@Model.Category"></label>
+                                <input id="Category" type="text" asp-for="@Model.Category" class="form-control" />
+                                <span asp-validation-for="Category" class="text-danger"></span>
+
+                                <label asp-for="@Model.Description"></label>
+                                <textarea id="Description" type="text" asp-for="@Model.Description" class="form-control"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            @* <div class="main-container">
+                                <div class="editor-container editor-container_inline-editor" id="editor-container">
+                                    <div class="editor-container__editor">
+                                        <div id="editor">
+                                            @Html.Raw(@Model.Content)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+                            <div class="row mb-4">
+                                <label asp-for="@Model.Duration"></label>
+                                <input id="Duration" type="number" asp-for="@Model.Duration" class="form-control" />
+                                <span asp-validation-for="Duration" class="text-danger"></span>
+
+                                <label asp-for="@Model.Price"></label>
+                                <input id="Price" type="number" asp-for="@Model.Price" class="form-control" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+
+                                <label asp-for="@Model.CoachID"></label>
+                                <input id="Owner" type="text" asp-for="@Model.CoachID" class="form-control" value="Please insert the new coach's ID'" />
+                                <span asp-validation-for="Owner" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4" style="display:flex;justify-content:center">
+                        <a asp-controller="PremadePrograms" asp-action="Details" asp-route-programId="@Model.ID" class="btn btn-secondary w-25">Back</a>
+                        <button type="submit" id="saveBtn" class="btn btn-primary w-25 me-2">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+@*     <script src="https://cdn.ckeditor.com/ckeditor5/46.0.0/ckeditor5.umd.js" crossorigin></script>
+    
+    <script src="~/js/main.js"></script> *@
+
+    <script>
+        document.getElementById('editForm')
+            .addEventListener('submit', async function (e) {
+
+            e.preventDefault();
+
+            const getValue = id => document.querySelector(id)?.value.trim();
+
+            const toIntOrNull = v => v === "" ? null : parseInt(v, 10);
+            const toFloatOrNull = v => v === "" ? null : parseFloat(v);
+
+            const data = {
+                Title: getValue('#Title'),
+                Category: getValue('#Category'),
+                Description: getValue('#Description'),
+                CoverImage: getValue('#CoverImage'),
+                CoverImageName: getValue('#CoverImageName'),
+                Duration: toIntOrNull(getValue('#Duration')),
+                Price: toFloatOrNull(getValue('#Price')),
+                CoachID: toIntOrNull(getValue('#Owner'))
+            };
+
+            try {
+                const response = await fetch(
+                    '@Url.Action("SaveProgram", "PremadePrograms")',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken':
+                                document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify(data)
+                    }
+                );
+
+                // Clear previous validation messages
+                document
+                    .querySelectorAll('[data-valmsg-for]')
+                    .forEach(el => el.innerText = '');
+
+                if (!response.ok) {
+                    const result = await response.json();
+
+                    if (result.errors) {
+                        for (const key in result.errors) {
+
+                            // Safety: normalize key (dto.Duration → Duration)
+                            const field = key.split('.').pop();
+
+                            const span = document.querySelector(
+                                `[data-valmsg-for="${field}"]`
+                            );
+
+                            if (span) {
+                                span.innerText = result.errors[key][0];
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                // Success
+                window.location.href =
+                    '@Url.Action("Index", "PremadePrograms")';
+
+            } catch (err) {
+                console.error(err);
+                alert('Error saving data.');
+            }
+        });
+    </script>
+
+    <script>
+        let base64Image = null;
+        let imageFileName = null;
+
+        function convertToBase64(event) {
+            try{
+
+            const file = event.target.files[0];
+            if (!file) {
+                base64Image = null;
+                imageFileName = null;
+                return;
+            }
+            imageFileName = file.name;
+
+            console.log(imageFileName);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64Image = e.target.result.split(",")[1]; // Remove data prefix
+                console.log("Base64 string ready", base64Image);
+
+                // Optionally, set to a hidden input to submit with the form
+                document.getElementById("ProfileImageBase64").value = base64Image;
+                document.getElementById("ProfileImageFileName").value = imageFileName;
+            };
+            reader.readAsDataURL(file);
+
+            // Also update preview
+            const preview = document.getElementById("imagePreview");
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+            } catch (err){
+                console.log("Error resulting from convertToBase64 : ", err);
+            }
+        }
+    </script>
+    
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,89 @@
+﻿@model FitnessClub_Test.Dtos.BookingCreateDTO
+
+@{
+    ViewData["Title"] = "Create Booking";
+}
+
+<head>
+    <style>
+        .container div, .btn {
+            width: 100%;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            gap: 1em;
+        }
+
+        .text-danger {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<main>
+
+    <div class="container card w-75 my-4">
+        <div class="card-header">
+            <h2>Create New Booking</h2>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="CreateBooking" asp-controller="Booking" method="post">
+                <div class="flex">
+                    <div class="form-group mb-3">
+                        <label>Class</label>
+                        <select asp-for="ClassID" class="form-control">
+                            <option value="">-- Select Class --</option>
+                            @foreach (var cls in Model.Classes)
+                            {
+                                <option value="@cls.ClassID">
+                                    @cls.Name
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="ClassID" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Client</label>
+                        <select asp-for="ClientID" class="form-control">
+                            <option value="">-- Select Client --</option>
+                            @foreach (var client in Model.Clients)
+                            {
+                                <option value="@client.ClientID">
+                                    @client.FullName
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="ClientID" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="flex">
+
+                    <div class="flex">
+                        <div class="form-group mb-3">
+                            <label>Type</label>
+                            <input asp-for="Type" type="text" class="form-control" />
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex mb-3">
+                    <button type="submit" class="btn btn-primary">Create Booking</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<!-- 🔥 REQUIRED FOR CLIENT-SIDE VALIDATION -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,58 @@
+﻿@using FitnessClub_Test.Dtos
+@model CoachDTO
+@{
+}
+<style>
+    form div {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<main>
+    <div class="card mx-4 my-4">
+        <div class="card-header">
+            <h5 class="card-title">Edit Coach</h5>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <!--begin::Row-->
+            <div class="row">
+                <form asp-controller="Coach" asp-action="ConfirmDelete" method="post">
+                    <input type="hidden" asp-for="UserID" value="@Model.UserID" />
+
+                    <div class="form-group">
+                        <label asp-for="FullName">Full Name</label>
+                        <input asp-for="FullName" class="form-control" value="@Model.FullName" disabled/>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Specialty"></label>
+                        <input asp-for="Specialty" class="form-control" value="@Model.Specialty" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="YearsExperience">Years Of Experience</label>
+                        <input asp-for="YearsExperience" class="form-control" value="@Model.YearsExperience" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Salary"></label>
+                        <input asp-for="Salary" class="form-control" value="@Model.Salary" disabled />
+                    </div>
+
+                    <button type="submit" class="btn btn-danger">Confirm Deletion</button>
+                    <a asp-controller="Coach" asp-action="Index" class="btn btn-secondary">Back To List</a>
+                </form>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!-- ./card-body -->
+    </div>
+</main>
+

@@ -1,0 +1,181 @@
+@{
+    ViewData["Title"] = "Classes";
+    Layout = "_Layout"; // or whatever your site layout file is named
+}
+
+<main>
+    <!--? Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>Courses</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <!--? Team -->
+    <section class="team-area fix section-padding30">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="section-tittle text-center mb-55">
+                        <h2>What We Offer</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Services End -->
+
+    <!-- Traning categories Start -->
+    <section class="traning-categories black-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/zumba.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>Zumba</h3>
+                                    <p>
+                                        A high-energy dance workout that blends Latin rhythms with easy-to-follow moves
+                                        <br /> perfect for burning calories while having fun.
+                                    </p>
+                                    <button class="border-btn" onclick="bookClass(10)">Book Class</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/taekwondo.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>Taekwondo</h3>
+                                    <p>
+                                        A traditional martial arts class focused on self-discipline, flexibility, and striking techniques
+                                        <br /> great for all ages and skill levels.
+                                    </p>
+                                    <button class="border-btn" onclick="bookClass(6)">Book Class</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/hiit.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>HIIT</h3>
+                                    <p>
+                                        Intense bursts of exercise followed by short recovery periods
+                                        <br /> designed to burn fat, build endurance, and boost metabolism.
+                                    </p>
+                                    <button class="border-btn" onclick="bookClass(7)">Book Class</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/yoga.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>Yoga</h3>
+                                    <p>
+                                        A calming class that improves balance, flexibility, and mental focus through mindful movement and breath control.
+                                    </p>
+                                    <button class="border-btn" onclick="bookClass(3)">Book Class</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="single-topic text-center mb-30">
+                            <div class="topic-img">
+                                <img src="~/img/gallery/spinning.jpg" alt="">
+                                <div class="topic-content-box">
+                                    <div class="topic-content">
+                                        <h3>Spinning (Indoor Cycling)</h3>
+                                        <p>
+                                            Cardio-intensive cycling workouts set to music
+                                            <br /> ideal for strengthening legs, improving stamina, and torching calories.
+                                        </p>
+                                        <button class="border-btn" onclick="bookClass(11)">Book Class</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script src="~/js/site.js"></script>
+
+            </div>
+        </div>
+    </section>
+    <!-- Traning categories End -->
+
+    <!--? video_start -->
+    <!--
+    <div class="video-area section-bg2 d-flex align-items-center"
+         data-background="~/img/gallery/video-bg.png">
+        <div class="container">
+            <div class="video-wrap position-relative">
+                <div class="video-icon">
+                    <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=up68UAfH0d0"><i
+                            class="fas fa-play"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+    <!-- video_end -->
+
+    <!-- ? services-area -->
+    <section class="services-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40">
+                        <div class="features-caption">
+                            <h3>Location</h3>
+                            <p>Still loading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="features-caption">
+                            <h3>Phone</h3>
+                            <a href="tel:+96181123456">+961 81 123 456</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                        <div class="features-caption">
+                            <h3>Email</h3>
+                            <a href="mailto:fitnessclub@gmail.com">fitnessclub@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

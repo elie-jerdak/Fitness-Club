@@ -1,0 +1,171 @@
+@model FitnessClub_Test.Dtos.UserProfileDto
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Profile";
+}
+<main>
+    <!-- Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>@ViewData["Title"]</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="card user-card-full shadow w-100" style="max-width: 900px; margin-top: 4%;">
+            <div class="row g-0">
+                <div class="col-sm-4 bg-c-lite-green user-profile">
+                    <div class="card-body text-center text-white">
+                        <div class="mb-3">
+                            <img src="https://www.gravatar.com/avatar/?d=mp&s=200" class="img-radius img-fluid"
+                                alt="User-Profile-Image">
+                        </div>
+                        <h2 style="color: white;">@Model.FirstName @Model.SecondName</h2>
+                        <h4 style="color: white;">@Model.Role</h4>
+                        <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post"
+                            class="mt-auto text-center"></form>
+                        <a href="#" onclick="document.getElementById('logoutForm').submit();" class="text-white fw-bold"
+                            style="text-decoration: none; cursor: pointer; font-size: 1.1rem;">
+                            Logout &rarr;
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card-body" style="margin-top: 3%;">
+                        <h6 class="mb-3 pb-2 border-bottom fw-bold">Information</h6>
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <p class="fw-bold mb-1">Email</p>
+                                <p class="text-muted">@Model.Email</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="fw-bold mb-1">Phone</p>
+                                <p class="text-muted"> @Model.PhoneNumber</p>
+                            </div>
+                        </div>
+
+                        @if (Model.Role == "Client")
+                        {
+                            <div id="clientFields">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Weight</p>
+                                        <p class="text-muted">@Model.Weight</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Height</p>
+                                        <p class="text-muted">@Model.Height</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Medical Issues</p>
+                                        <p class="text-muted">@Model.MedicalIssues</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Target</p>
+                                        <p class="text-muted">@Model.Target</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        else if (Model.Role == "Coach")
+                        {
+                            <div id="coachFields">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Salary</p>
+                                        <p class="text-muted">@Model.Salary</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Experience</p>
+                                        <p class="text-muted">@Model.Experience years</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <p class="fw-bold mb-1">Specialty</p>
+                                        <p class="text-muted">@Model.Specialty</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <h6
+                            class="mb-3 mt-4 pb-2 border-bottom fw-bold d-flex justify-content-between align-items-center">
+                            QR Code
+                        </h6>
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <p class="fw-bold">Your QR Code</p>
+                                <img src="@Model.QrCode" class="img-fluid" style="max-width: 200px;" />
+                                <p class="mt-3">Scan this QR code to check in at the gym.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="text-center mt-4" style="margin-bottom: 3%;">
+    <a asp-controller="Account" asp-action="UpdateProfile" class="btn btn-primary">
+        <i class="fa fa-edit me-2"></i> Update Info
+    </a>
+</div>
+
+
+
+
+
+    <!-- Services Area -->
+    <section class="services-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon1.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Location</h3>
+                            <p>Still loading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon2.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Phone</h3>
+                            <p>+961 81 123 456</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon3.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Email</h3>
+                            <p>fitnessclub@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

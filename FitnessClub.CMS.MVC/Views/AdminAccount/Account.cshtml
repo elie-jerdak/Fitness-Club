@@ -1,0 +1,266 @@
+﻿@model FitnessClub_Test.Dtos.AdminAccountDTO
+
+
+<head>
+    <link rel="stylesheet" href="~/css/Account.css" />
+</head>
+
+<main class="app-main">
+    <div style="width:99%">
+        <form id="Form" class="row" asp-controller="AdminAccount" asp-action="Edit">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="position-relative bg-primary py-5 me-2">
+                            <div class="container text-white">
+                                <h2>@Model.First_Name @Model.Last_Name</h2>
+                            </div>
+
+
+                            <div class="position-absolute top-100 end-0 translate-middle-y" style="z-index: 10; margin-left: 60rem;">
+                                <img src="@Url.Content($"~/assets/profileimages/{Model.Photo ?? "default.png"}")" id="imagePreview"
+                                     class="rounded-circle border border-3 border-white"
+                                     style="width: 200px;" alt="Trainer Image">
+                                <span asp-validation-for="@Model.Photo" class="text-danger"></span>
+
+
+                                <button type="button" class="btn btn-light btn-sm position-absolute bottom-0 end-0 translate-middle"
+                                        id="editImage" title="Edit Image"
+                                        style="border-radius: 50%; z-index: 11;" onclick="document.getElementById('fileInput').click()"
+                                        disabled>
+
+                                    <i class="bi bi-pencil-fill text-primary"></i>
+                                </button>
+
+                                <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="convertToBase64(event)" />
+
+                                <input type="hidden" id="ProfileImageBase64" name="ProfileImageBase64" />
+                                <input type="hidden" id="ProfileImageFileName" name="ProfileImageFileName" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+                        <div class="col-8 col-md-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">Personal Information</h4>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                            <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                            <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row" id="input_fields">
+                                        <div class="col-6">
+                                            <label asp-for="First_Name" class="form-label">First Name</label>
+                                            <input id="First_Name" asp-for="First_Name" type="text" class="form-control" value="@Model.First_Name" readonly>
+                                            <span asp-validation-for="First_Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="Last_Name" class="form-label">Last Name</label>
+                                            <input id="Last_Name" asp-for="Last_Name" type="text" class="form-control" value="@Model.Last_Name" readonly>
+                                            <span asp-validation-for="Last_Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-12">
+                                            <label asp-for="Email" class="form-label">Email</label>
+                                            <input id="Email" asp-for="Email" type="email" class="form-control" value="@Model.Email" readonly>
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="Address" class="form-label"></label>
+                                            <input id="Address" asp-for="Address" type="text" class="form-control" value="@Model.Address" readonly>
+                                            <span asp-validation-for="Address" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="DOB" class="form-label">Date Of Birth</label>
+                                            <input id="DOB" asp-for="DOB" type="date" class="form-control" asp-format="{0:yyyy-MM-dd}" readonly />
+                                            <span asp-validation-for="DOB" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="Phone_Number" class="form-label">Phone Number</label>
+                                            <input id="Phone_Number" asp-for="Phone_Number" type="text" class="form-control" value="@Model.Phone_Number" readonly />
+                                            <span asp-validation-for="Phone_Number" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="Gender" class="form-label">Gender</label>
+                                            <input id="Gender" asp-for="Gender" type="text" class="form-control" value="@(Model.Gender.ToUpper() == "M" ? "Male" : "Female")" readonly>
+                                            <span asp-validation-for="Gender" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-4">
+                            <button type="button" class="btn btn-primary btu" id="edit" onclick="enableFormEditing()">Update Information</button>
+                            <button type="submit" class="btn btn-success btu mt-2" id="submitBtn" disabled>Save</button>
+                            <div class="text-danger mt-2" data-valmsg-summary></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+</main>
+
+
+@* enable/disable buttons *@
+<script>
+    function enableFormEditing() {
+        const form = document.getElementById("Form");
+        const inputs = form.querySelectorAll("input[readonly]");
+        inputs.forEach(input => {
+            input.removeAttribute("readonly");
+        });
+
+        // Enable submit button
+        document.getElementById("submitBtn").disabled = false;
+        document.getElementById("edit").disabled = true;
+        document.getElementById("editImage").disabled = false;
+    }
+</script>
+
+@* convertToBase64 Image *@
+<script>
+    let base64Image = null;
+    let imageFileName = null;
+
+    function convertToBase64(event) {
+        try{
+        
+            const file = event.target.files[0];
+            if (!file) {
+                base64Image = null;
+                imageFileName = null;
+                return;
+            }
+            
+            // CRITICAL: Check file size before converting
+            const maxSize = 3 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert("Image must be 3 MB or smaller.");
+                event.target.value = "";
+                return;
+            }
+        
+            // Extension check
+            const allowedExtensions = ["jpg", "jpeg", "png"];
+            const extension = file.name.split('.').pop().toLowerCase();
+        
+            if (!allowedExtensions.includes(extension)) {
+                alert("Only JPG, JPEG, or PNG images are allowed.");
+                event.target.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                base64Image = e.target.result.split(",")[1]; // Remove data prefix
+
+                document.getElementById("ProfileImageBase64").value = base64Image;
+                document.getElementById("ProfileImageFileName").value = file.name;
+            
+                 // Update preview
+                const preview = document.getElementById("imagePreview");
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+             };
+        
+            reader.readAsDataURL(file);
+     } catch (err){
+                console.log("Error resulting from convertToBase64 : ", err);
+        }
+     }
+    
+</script>
+
+@* Submitting Script *@
+<script>
+    const summary = document.querySelector('[data-valmsg-summary]');
+
+    document.getElementById('Form').addEventListener('submit', async function (e) {
+
+        e.preventDefault();
+
+        const getValue = id => document.querySelector(id)?.value.trim();
+        const dobRaw = document.getElementById("DOB")?.value;
+
+        const data = {
+            First_Name: getValue('#First_Name'),
+            Last_Name: getValue('#Last_Name'),
+            Email: getValue('#Email'),
+            ProfileImageBase64: getValue('#ProfileImageBase64'),
+            ProfileImageFileName: getValue('#ProfileImageFileName'),
+            Address: getValue('#Address'),
+            Phone_Number: getValue('#Phone_Number'),
+            Gender: getValue('#Gender'),
+            DOB: dobRaw ? new Date(dobRaw).toISOString() : null
+        };
+
+        try {
+            const response = await fetch(
+                '@Url.Action("Edit", "AdminAccount")',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken':
+                            document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(data)
+                }
+            );
+
+            // Clear previous validation messages
+            document
+                .querySelectorAll('[data-valmsg-for]')
+                .forEach(el => el.innerText = '');
+            
+            if (!response.ok) {
+                const result = await response.json();
+
+                if (result.errors) {
+                    for (const key in result.errors) {
+
+                        // Global error
+                        if (key === "_") {
+                            if (summary) summary.innerText = result.errors[key][0];
+                            continue;
+                        }
+
+                        // Safety: normalize key
+                        const field = key.split('.').pop();
+                        const span = document.querySelector(
+                            `[data-valmsg-for="${field}"]`
+                        );
+
+                        if (span) {
+                            span.innerText = result.errors[key][0];
+                        }
+                    }
+                }
+                return;
+            }
+
+            // Success
+            window.location.href =
+                '@Url.Action("Index", "AdminAccount")';
+
+        } catch (err) {
+            console.error(err);
+            alert('Error saving data.');
+        }
+    });
+</script>

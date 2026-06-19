@@ -1,0 +1,163 @@
+﻿@using FitnessClub_Test.Dtos
+@{
+
+}
+<style>
+    th, td {
+        text-align: center; 
+        vertical-align: middle;
+    }
+</style>
+@model List<ExpiringSubscriptionDto>
+ <main>
+    <div class="container-fluid">
+
+        <!-- Upper Info boxes -->
+        <div class="row">
+            <!--Row Col 1-->
+            <div class="col-md-12">
+                <!--begin Table card-->
+                <div class="card mb-4 my-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Upcoming Membership Expirations</h5>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!--begin::Row-->
+                        <div class="row">
+                            <div class="col">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <td style="display:none">User ID</td>
+                                            <th>Membership ID</th>
+                                            <th>Full Name</th>
+                                            <th>Membership Type</th>
+                                            <th>Expiration Date</th>
+                                            <th>Days Remaining</th>
+                                            <th>Notification Status</th>
+                                            <th style="width:30%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (!Model.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="8" class="text-center">There is no upcoming expiration</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td style="display:none">@item.UserId</td>
+                                                    <td>@item.MembershipId</td>
+                                                    <td>@item.FullName</td>
+                                                    <td>@item.Membership_Type</td>
+                                                    <td>@item.EndDate.ToShortDateString()</td>
+                                                    <td>
+                                                        @if (item.DaysRemaining == 0)
+                                                        {
+                                                            <span class="badge text-bg-danger">Expired</span>
+                                                        }
+                                                        else if (item.DaysRemaining < 0)
+                                                        {
+                                                            if (item.DaysRemaining == -1)
+                                                            {
+                                                                <span class="badge text-bg-dark">Exceeded by @Math.Abs(item.DaysRemaining) day</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge text-bg-dark">Exceeded by @Math.Abs(item.DaysRemaining) days</span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.DaysRemaining == 1)
+                                                            {
+                                                                <span class="badge text-bg-success">@item.DaysRemaining day remaining</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge text-bg-success">@item.DaysRemaining days remaining</span>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (item.NotificationSent)
+                                                        {
+                                                            <span class="badge text-bg-success">Notification Sent</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge text-bg-warning">Not Sent</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <div class="w-100 btn-group" role="group">
+                                                            <input type="hidden" name="userId" value="@item.UserId" />
+                                                            <a asp-controller="UpcomingExpiration" asp-action="SendNotification" asp-route-userId="@item.UserId"
+                                                               class="btn btn-primary mx-2"><i class="bi bi-send"></i> Send Notification</a>
+                                                            <button type="button"
+                                                                    class="btn btn-warning mx-2"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#renewModal-@item.MembershipId">
+                                                                <i class="bi bi-arrow-repeat"></i> Renew Subscription
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal fade" id="renewModal-@item.MembershipId" tabindex="-1" aria-labelledby="renewModalLabel-@item.MembershipId" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        <h5 class="modal-title" id="renewModalLabel-@item.MembershipId">Subscription Renewal</h5>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>Would you like to view your invoice or continue?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer justify-content-evenly">
+                                                                        <form asp-controller="UpcomingExpiration" asp-action="Renew" method="post" style="display:inline;">
+                                                                            <input type="hidden" name="membershipId" value="@item.MembershipId" />
+                                                                            <button type="submit" class="btn btn-primary">
+                                                                                Renew And Go To Invoice
+                                                                            </button>
+                                                                        </form>
+
+                                                                        <form asp-controller="UpcomingExpiration" asp-action="RenewOnly" method="post" class="d-inline">
+                                                                            <input type="hidden" name="membershipId" value="@item.MembershipId" />
+                                                                            <button type="submit" class="btn btn-success">
+                                                                                Renew Only
+                                                                            </button>
+                                                                        </form>
+
+                                                                        <form asp-controller="UpcomingExpiration" asp-action="PayOnline" method="post" class="d-inline">
+                                                                            <input type="hidden" name="membershipId" value="@item.MembershipId" />
+                                                                            <button type="submit" class="btn btn-warning">
+                                                                                Pay Online
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>                               
+                        </div>
+                        <!--end::Row-->
+                    </div>
+                    <!-- ./card-body -->
+                </div>
+                <!-- end Table Card -->
+            </div>
+        </div>
+    </div>
+</main>
+

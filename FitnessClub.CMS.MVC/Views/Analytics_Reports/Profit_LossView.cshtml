@@ -1,0 +1,344 @@
+﻿@using Microsoft.AspNetCore.Http
+@model FitnessClub_Test.Dtos.FinanceTableDto
+
+<style>
+    .data {
+        text-align: center;
+    }
+
+</style>
+
+<main class="app-main">
+    <div class="row mx-4 mt-4 d-flex" style="height:25%; background-color:cadetblue;border-radius:5px;align-items:center;justify-content:space-between">
+        <div class="my-4" style="width:70%;border-right:3px solid white; ">
+            <h1 style="color:white">Profit Loss Statement</h1>
+        </div>
+        <div class="w-25">
+            <h5 style="color:white">Reporting Year: @DateTime.Now.Year</h5>
+
+        </div>
+    </div>
+    <div class="row mx-4 my-4"> 
+       <div class="col">
+           <div class="row mt-4 mb-4">
+               <div class="card">
+                   <div class="card-body">
+                        <div id="RevenueChart"></div>
+                   </div>
+                   
+               </div>
+           </div>
+            <div class="row">
+               <div class="card mb-4">
+                    <div class="card-body">
+                        <div id="ExpensesChart"></div>
+                    </div>
+               </div>
+           </div> 
+       </div>
+       
+       <div class="col me-4">
+            <h3 class="mt-4">Detailed Overview</h3>
+            <hr style="background-color:cadetblue; height: 3px; border: none;" />
+            <table class="table-responsive mt-4 w-100">
+                <thead>
+                    <tr>
+                        <th></th>
+                        @if (Model?.Months != null)
+                        {
+                            @foreach (var month in Model.Months)
+                            {
+                                <th class="data" style="background-color:lightgrey">@month</th>
+                            }
+                        }
+                        else
+                        {
+                            <!-- Months data is null or empty -->
+                            <th class="data" style="background-color:lightgrey">No months available</th>
+                        }
+                        <th class="data" style="background-color:cadetblue">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Revenue Title Row -->
+                    <tr>
+                        <td colspan="@(Model.Months.Count + 2)" style="background-color:lightblue;font-weight:bold">Revenue</td>
+                    </tr>
+
+                    <!-- Revenue Data Rows -->
+                    @foreach (var revenue in Model.Revenues)
+                    {
+                        var total = revenue.Value.Sum();
+                        <tr>
+                            <td style="text-align:end">@revenue.Key</td>
+                            @foreach (var val in revenue.Value)
+                            {
+                                <td class="data">@val</td>
+                            }
+                            <td class="data" style="background-color:lightgrey">@total</td>
+                        </tr>
+                    }
+
+                    <!-- Gross Revenue Row -->
+                    <tr>
+                        <td style="text-align:end;font-weight:bold">Gross Revenue</td>
+                        @for (int i = 0; i < Model.Months.Count; i++)
+                        {
+                            var gross = Model.Revenues.Sum(r => r.Value[i]);
+                            <td class="data font-weight-bold">@gross</td>
+                        }
+                        <td class="data" style="background-color:lightgrey;font-weight:bold">@Model.Revenues.Sum(r => r.Value.Sum())</td>
+                    </tr>
+
+                    <!-- Empty Spacer Row -->
+                    <tr>
+                        <td style="color:white">empty line</td><td colspan="@(Model.Months.Count)"></td>
+                        <td style="background-color:lightgrey"></td>
+                    </tr>
+
+                    <!-- Expenses Title Row -->
+                    <tr>
+                        <td colspan="@(Model.Months.Count + 2)" style="background-color:lightblue;font-weight:bold">Expenses</td>
+                    </tr>
+
+                    <!-- Expenses Data Rows -->
+                    @foreach (var expense in Model.Expenses)
+                    {
+                        var total = expense.Value.Sum();
+                        <tr>
+                            <td style="text-align:end">@expense.Key</td>
+                            @foreach (var val in expense.Value)
+                            {
+                                <td class="data">@val</td>
+                            }
+                            <td class="data" style="background-color:lightgrey">@total</td>
+                        </tr>
+                    }
+
+                    <!-- Gross Expenses Row -->
+                    <tr>
+                        <td style="text-align:end;font-weight:bold">Gross Expenses</td>
+                        @for (int i = 0; i < Model.Months.Count; i++)
+                        {
+                            var gross = Model.Expenses.Sum(e => e.Value[i]);
+                            <td class="data font-weight-bold">@gross</td>
+                        }
+                        <td class="data" style="background-color:lightgrey;font-weight:bold">@Model.Expenses.Sum(e => e.Value.Sum())</td>
+                    </tr>
+
+                    <!-- Empty Spacer Row -->
+                    <tr>
+                        <td style="color:white">empty line</td>
+                        <td colspan="@(Model.Months.Count)"></td>
+                        <td style="background-color:lightgrey"></td>
+                    </tr>
+
+                    <!-- Net Profit Row -->
+                    <tr>
+                        <td style="background-color:cadetblue;font-weight:bold">Net Profit</td>
+                        @for (int i = 0; i < Model.Months.Count; i++)
+                        {
+                            var rev = Model.Revenues.Sum(r => r.Value[i]);
+                            var exp = Model.Expenses.Sum(e => e.Value[i]);
+                            <td class="data"
+                                style="background-color:cadetblue">@((rev - exp))</td>
+                        }
+                        <td class="data" style="background-color:cadetblue;font-weight:bold">
+                            @(Model.Revenues.Sum(r => r.Value.Sum()) - Model.Expenses.Sum(e => e.Value.Sum()))
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+       </div>
+   </div>
+</main>
+
+<script>
+    window.authToken = @Html.Raw(Json.Serialize(Context.Session.GetString("access")));
+
+    // put this immediately after
+    window.getAuthToken = function () {
+        return window.authToken || null;
+    };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    
+    
+    fetch('https://localhost:7100/api/report-charts/monthlyRevenue', {
+        headers: {
+                'Authorization': `Bearer ${window.getAuthToken()}`
+        }
+    })
+    .then(async response => {
+
+        // STATUS CODE HANDLING
+        if (response.status === 401) {
+            if (response.status === 401) {
+                window.location.href = "/Login/Bridge";
+                return; 
+            }
+        }
+
+        if (response.status === 404) {
+            throw new Error("Revenue data not found.");
+        }
+
+        if (response.status >= 500) {
+            throw new Error("Server error. Please try again later.");
+        }
+
+        if (!response.ok) {
+            throw new Error("Unexpected error occurred.");
+        }
+
+        return response.json();
+    })
+    .then(data => {
+
+        var options = {
+            series: data.series,
+            chart: {
+                type: 'bar',
+                height: 350,
+                stacked: true,
+                toolbar: { show: true },
+                zoom: { enabled: true }
+            },
+            colors: ['#27AE60', '#1ABC9C', '#48C9B0','#A9DFBF', ],
+            xaxis: {
+                type: 'text',
+                categories: data.categories
+            },
+            title: {
+                text: 'Revenue',
+                align: 'center'
+            },
+            legend: {
+                position: 'bottom',
+                offsetY: 20
+            },
+            fill: { opacity: 1 },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    borderRadius: 10,
+                    dataLabels: {
+                        total: {
+                            enabled: true,
+                            style: {
+                                fontSize: '13px',
+                                fontWeight: 900
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        new ApexCharts(document.querySelector("#RevenueChart"), options).render();
+
+    })
+    .catch(error => {
+
+        console.error("Revenue chart error:", error.message);
+
+        document.querySelector("#RevenueChart").innerHTML = `
+            <div style="text-align:center;color:red;margin-top:20px;">
+                ${error.message}
+            </div>
+        `;
+    });
+</script>
+
+<script>
+
+    fetch('https://localhost:7100/api/report-charts/monthlyExpenses', {
+        headers: {
+            'Authorization': `Bearer ${window.getAuthToken()}`
+        }
+    })
+    .then(async response => {
+
+        // HANDLE STATUS CODES FIRST
+        if (response.status === 401) {
+            if (response.status === 401) {
+                window.location.href = "/Login/Bridge";
+                return;
+            }
+        }
+
+        if (response.status === 404) {
+            throw new Error("Data not found.");
+        }
+
+        if (response.status >= 500) {
+            throw new Error("Server error. Please try again later.");
+        }
+
+        if (!response.ok) {
+            throw new Error("Unexpected error occurred.");
+        }
+
+        return response.json();
+    })
+    .then(data => {
+
+        var options = {
+            series: data.series,
+            chart: {
+                type: 'bar',
+                height: 350,
+                stacked: true,
+                toolbar: { show: true },
+                zoom: { enabled: true }
+            },
+            colors: ['#E53935', '#FB8C00', '#FDD835'],
+            xaxis: {
+                type: 'text',
+                categories: data.categories
+            },
+            title: {
+                text: 'Expenses',
+                align: 'center'
+            },
+            legend: {
+                position: 'bottom',
+                offsetY: 20
+            },
+            fill: { opacity: 1 },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    borderRadius: 10,
+                    dataLabels: {
+                        total: {
+                            enabled: true,
+                            style: {
+                                fontSize: '13px',
+                                fontWeight: 900
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        new ApexCharts(document.querySelector("#ExpensesChart"), options).render();
+
+    })
+    .catch(error => {
+
+        console.error("Chart error:", error.message);
+
+        // 🔥 SHOW ERROR IN UI
+        document.querySelector("#ExpensesChart").innerHTML = `
+            <div style="text-align:center;color:red;margin-top:20px;">
+                ${error.message}
+            </div>
+        `;
+    });
+</script>

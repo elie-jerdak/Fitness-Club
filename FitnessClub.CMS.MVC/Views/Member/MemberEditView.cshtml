@@ -1,0 +1,567 @@
+﻿@using FitnessClub_Test.Dtos
+@model MemberEditDTO
+@{
+
+}
+<head>
+    <style>
+        .image-wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /*  fills perfectly, crops if needed */
+            display: block;
+        }
+    </style>
+</head>
+<main>
+    <div class="container mt-4">
+        <form id="editForm" asp-controller="Member" method="post" asp-action="EditPost">
+            <input type="hidden" asp-for="MemberID" name="MemberID" id="MemberID" value="@Model.MemberID" />
+            <input type="hidden" asp-for="UserId" name="UserId" id="UserId" value="@Model.UserId" />
+            @Html.AntiForgeryToken()
+            
+            <div class="row mb-4" asp-validation-summary="ModelOnly"></div>
+            
+            @* user part *@
+            <div class="row mb-4">
+                
+                @* User Information *@
+                <div class="col-md-8">
+                        <div class="card">
+                            <!--Begin.card-header-->
+                            <div class="card-header">
+                                <h3 class="card-title">User Information</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!--Begin.card-body-->
+                            <div class="card-body p-0">
+                                <div class="col">
+                                    <div class="card-body p-4 text-black">
+
+                                        <!-- First Name, Last_Name -->
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.FirstName">First Name</label>
+                                                    <input asp-for="@Model.FirstName" id="FirstName" class="form-control" />
+                                                    <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.LastName">Last Name</label>
+                                                    <input asp-for="@Model.LastName" id="LastName" class="form-control" />
+                                                    <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Email, Address -->
+                                        <div class="row">
+                                            <div class="col-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.Email"></label>
+                                                    <input type="email" name="Email" asp-for="@Model.Email" class="form-control" />
+                                                    <span asp-validation-for="@Model.Email" id="Email" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.Role"></label>
+                                                    <select asp-for="@Model.Role" id="role" asp-items="ViewBag.UserRole" class="form-control"></select>
+                                                    <span asp-validation-for="@Model.Role" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Gender, Address-->
+                                        <div class="row">
+                                            <div class="col-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.Gender"></label>
+                                                <select asp-for="@Model.Gender" id="Gender" asp-items="ViewBag.GenderOptions" class="form-control">
+                                                        <option value="">-- Select Gender --</option>
+                                                    </select>
+                                                    <span asp-validation-for="@Model.Gender" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 mb-4">
+                                                <div class="form-outline">
+                                                    <label asp-for="@Model.Address"></label>
+                                                    <input asp-for="@Model.Address" name="Address" class="form-control" />
+                                                    <span asp-validation-for="@Model.Address" id="Address" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Phone_Number,Date_Of_Birth, Role-->
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-outline mb-4">
+                                                    <label asp-for="@Model.PhoneNumber">Phone Number</label>
+                                                    <input type="tel" name="PhoneNumber" asp-for="@Model.PhoneNumber" class="form-control" />
+                                                    <span asp-validation-for="@Model.PhoneNumber" id="PhoneNumber" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="form-outline mb-4">
+                                                    <label asp-for="@Model.DOB">Date Of Birth</label>
+                                                    <input type="date" name="DOB" asp-for="@Model.DOB" class="form-control" />
+                                                    <span asp-validation-for="@Model.DOB" id="DOB" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+                @* Profile Image *@
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Profile Preview</h3>
+                        </div>
+                        <div class="card-body p-2">
+                            <div class="image-wrapper">
+                                <img id="imagePreview" src="@Url.Content($"~/assets/profileimages/{Model?.Photo ?? "default.png"}")" alt="Preview"
+                                     style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                            <div class="p-3">
+                                <!-- Form input or other content -->
+                                <input type="file" id="ProfileImage" accept="image/*" class="form-control" onchange="convertToBase64(event)" />
+
+                                <input type="hidden" id="ProfileImageBase64" name="ProfileImageBase64" />
+                                <input type="hidden" id="ProfileImageFileName" name="ProfileImageFileName" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* client, member part *@
+            <div class="row mb-4">
+
+                @* Client, Member *@
+                <div class="col-8 mb-4">
+                    @* Client *@
+                    <div class="card mb-4">
+
+                        <!--Begin.card-header-->
+                        <div class="card-header">
+                            <h3 class="card-title">Client Information</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Begin.card-body-->
+                        <div class="card-body">
+                            <div class="col">
+                                <!-- Weight, Height -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label asp-for="Height"></label>
+                                            <input asp-for="Height" name="Height" class="form-control" />
+                                            <span asp-validation-for="Height" id="Height" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label asp-for="Weight"></label>
+                                            <input asp-for="Weight" name="Weight" class="form-control" />
+                                            <span asp-validation-for="Weight" id="Weight" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Target, MedicalHistory -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label asp-for="Target"></label>
+                                            <select asp-for="Target" id="Target" asp-items="ViewBag.ClientTarget" class="form-control">
+                                                <option value="">-- Select Target --</option>
+                                            </select>
+                                            <span asp-validation-for="Target" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label asp-for="MedicalHistory"></label>
+                                            <input asp-for="MedicalHistory" id="MedicalHistory" class="form-control" />
+                                            <span asp-validation-for="MedicalHistory" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @* Member *@
+                    <div class="card">
+                        <div class="card-header">
+                                <h3 class="card-title">Membership Information</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <div class="card-body p-0">
+                            <div class="col">
+                                <div class="card-body text-black">
+                                    <div class="row ">
+                                        <div class="col-6">
+                                            <div class="form-outline">
+                                                <label asp-for="Type"></label>
+                                                <select asp-for="Type" id="Type" asp-items="ViewBag.MembershipType" class="form-control">
+                                                    <option value="">-- Select Type --</option>
+                                                </select>
+                                                <span asp-validation-for="Type" class="text-danger"></span>
+                                            </div>
+                                         </div>
+                                        <div class="col-6">
+                                            <div class="form-check mb-4 w-75">
+                                                <input asp-for="IsAutoRenewed" id="AutoRenewed" class="form-check-input" type="checkbox" />
+                                                <label asp-for="IsAutoRenewed" class="form-check-label">Auto-Renew Membership</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* QR Code *@
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">QR Code</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @Html.AntiForgeryToken()
+                            <p id="qrError"></p>
+                            <div id="qrDiv" class="mb-4" style="width:100%; height:auto; border:1px solid black">
+                                <img id="qrImage" src="" alt="QR Code" style="width:100%; height:auto; display:none;" />
+                                <input type="hidden" id="QrCode" name="QrCode" value="@Model?.QrCode" />
+                                <p id="qrPlaceholder" class="text-center">
+                                    No QR code generated yet.
+                                </p>
+                            </div>
+                            <button type="button" class="btn btn-primary w-100" id="generateQrBtn">
+                                Create QR Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            @* Premade Programs *@
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Programs Bought</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                            <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                            <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="col">
+                        <div class="card-body p-4 text-black">
+
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.PremadePrograms != null && Model.PremadePrograms.Any())
+                                    {
+                                        foreach (var program in Model.PremadePrograms)
+                                        {
+                                            <tr>
+                                                <td>@program.Title</td>
+                                                <td>@program.Category</td>
+                                                <td>@program.Price</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">No programs have been purchased.</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* button *@
+            <div class="row d-flex justify-content-center">
+                <a asp-action="Index" asp-controller="Member" class="btn btn-secondary w-25 mb-4">Back</a>
+                <button type="submit" class="btn btn-primary w-50 mb-4 me-2">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+@* Preview Image Script *@
+ <script>
+    function previewImage(event) {
+        const fileInput = event.target;
+        const file = fileInput.files[0];
+        const preview = document.getElementById("imagePreview");
+
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+</script> 
+
+@* Converting Photo to Base64 *@
+<script>
+    let base64Image = null;
+    let imageFileName = null;
+
+    function convertToBase64(event) {
+        try{
+
+            const file = event.target.files[0];
+            
+            if (!file) {
+                base64Image = null;
+                imageFileName = null;
+                return;
+            }
+            
+            imageFileName = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64Image = e.target.result.split(",")[1]; // Remove data prefix
+                console.log("Base64 string ready", base64Image);
+            
+                // Optionally, set to a hidden input to submit with the form
+                document.getElementById("ProfileImageBase64").value = base64Image;
+                document.getElementById("ProfileImageFileName").value = imageFileName;
+            };
+            reader.readAsDataURL(file);
+            
+            // Also update preview
+            const preview = document.getElementById("imagePreview");
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        } catch (err){
+            console.log("Error resulting from convertToBase64 : ", err);
+        }
+    }
+</script>
+
+@* QR-Update Script*@
+<script>
+
+    // Grab the token generated by Razor
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    const Verificationtoken = tokenInput ? tokenInput.value : "";
+
+    document.getElementById("generateQrBtn").addEventListener("click", async e => {
+        e.preventDefault();
+
+        const userId = document.getElementById("UserId").value;
+
+        const res = await fetch(`@Url.Action("GenerateUpdated", "Qr")?userId=${userId}`, 
+        {
+            method: "POST",
+            headers: { "RequestVerificationToken": Verificationtoken },
+            credentials: "include"
+        })       
+        
+        const data = await res.json();
+
+        if (!data.success) {
+            const error = document.getElementById("qrError");
+            error.innerHTML = data.message;
+            return;
+        }
+
+        // Show QR
+        
+        const placeholder = document.getElementById("qrPlaceholder");
+        placeholder.style.display = "none";
+
+        const qrInput = document.getElementById("QrCode");
+        qrInput.value = data.qrValue;
+
+        const img = document.getElementById("qrImage");
+        img.src = data.qrCodeBase64;
+        img.style.display = "block";
+    });
+</script>
+
+@* Get QR *@
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const UserID = @Model.UserId;
+
+        const response = await fetch(`/Member/GetQrByID?UserID=${UserID}`);
+        const result = await response.json();
+        
+
+        if (!result.success){
+            document.getElementById("qrError").innerHTML(result.message);
+            return;
+        }
+            
+
+        document.getElementById("qrImage").src = result.qrCodeBase64;
+        document.getElementById("qrImage").style.display = "block";
+        document.getElementById("qrPlaceholder").style.display = "none";
+        document.getElementById("QrCode").value = result.qrToken;
+    });
+</script>
+
+@* Submit Script *@
+<script>
+    const summary = document.querySelector('[data-valmsg-summary]');
+
+    document.getElementById('editForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const getString = id => document.querySelector(id)?.value?.trim() || null;
+        const getNumber = id => {
+            const v = document.querySelector(id)?.value;
+            return v === "" || v == null ? null : Number(v);
+        };
+
+
+        const dobRaw = document.getElementById("DOB")?.value;
+
+        const data = {
+            MemberID: getNumber('#MemberID'),
+            FirstName: getString('#FirstName'),
+            LastName: getString('#LastName'),
+            Email: getString('#Email'),
+            PhoneNumber: getString('#PhoneNumber'),
+            Address: getString('#Address'),
+            DOB: dobRaw ? new Date(dobRaw).toISOString() : null,
+            Gender: getString('#Gender'),
+            QrCode: getString('#QrCode'),
+    
+            Height: getNumber('#Height'),
+            Weight: getNumber('#Weight'),
+            Target: getString('#Target'),
+            MedicalHistory: getString('#MedicalHistory'),
+    
+            Type: getString('#Type'),
+            IsAutoRenewed: document.querySelector('#IsAutoRenewed')?.checked ?? false,
+    
+            ProfileImageBase64: document.querySelector('#ProfileImageBase64')?.value || null,
+            ProfileImageFileName: getString('#ProfileImageFileName')
+        };
+
+
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            const response = await fetch('@Url.Action("EditPost", "Member")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(data)
+            });
+
+            // Clear previous validation messages
+            document.querySelectorAll('[data-valmsg-for]').forEach(el => el.innerText = '');
+
+            if (!response.ok) {
+                const result = await response.json();
+
+                if (result.errors) {
+                    for (const key in result.errors) {
+                        // Global error
+                        if (key === "_") {
+                            if (summary) summary.innerText = result.errors[key][0];
+                            continue;
+                        }
+
+                        // Safety: normalize key
+                        const field = key.split('.').pop();
+                        const span = document.querySelector(
+                            `[data-valmsg-for="${field}"]`
+                        );
+
+                        if (span) {
+                            span.innerText = result.errors[key][0];
+                        }
+                    }
+                }
+
+                if (response.status === 403) {
+                    window.location.href = '/Error/403';
+                }
+
+                return;
+            }
+
+            // Success
+            window.location.href = '@Url.Action("Index", "Member")';
+
+        } catch (err) {
+            console.error(err);
+            alert('Error saving member.');
+        }
+    });
+</script>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

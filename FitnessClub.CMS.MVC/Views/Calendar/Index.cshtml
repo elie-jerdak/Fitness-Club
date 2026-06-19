@@ -1,0 +1,542 @@
+﻿@{
+}
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+
+    <style>
+        .fc a {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        #eventModal .form-check-input {
+            margin-right: 0;
+        }
+
+        .rounded-color-input {
+            border-radius: 50px !important;
+            padding: 0 !important;
+            width: 1rem;
+            height: 1rem;
+        }
+
+            .rounded-color-input::-webkit-color-swatch-wrapper {
+                padding: 0;
+            }
+
+            .rounded-color-input::-webkit-color-swatch {
+                border: none;
+                border-radius: 50px;
+            }
+
+            /* For Firefox */
+            .rounded-color-input::-moz-color-swatch {
+                border: none;
+                border-radius: 50px;
+            }
+    </style>
+</head>
+<main>
+    <div class="card">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+    @* Event Modal *@
+    <div class="modal fade" id="eventModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content bg-body-tertiary">
+
+                <div class="modal-header d-flex justify-content-between">
+                    <h5 class="modal-title">Event Details</h5>
+                    <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <input type="hidden" id="eventId">
+
+                        <div class="row g-4">
+
+                            <!-- LEFT COLUMN -->
+                            <div class="col-lg-6">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" id="eventTitle" class="form-control">
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Start</label>
+                                        <input type="datetime-local" id="eventStart" class="form-control">
+                                    </div>
+
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">End</label>
+                                        <input type="datetime-local" id="eventEnd" class="form-control">
+                                    </div>
+                                </div>
+                               
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="eventDescription" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT COLUMN -->
+                            <div class="col-lg-6">
+                                <div class="row d-flex justify-content-between">
+                                    <div class="col mb-3">
+                                        <label class="form-label">Type</label>
+                                        <select id="eventType" class="form-select">
+                                            <option value="Group">Group</option>
+                                            <option value="Private">Private</option>
+                                            <option value="Administrative">Administrative</option>
+                                            <option value="Special">Special</option>
+                                        </select>
+                                    </div>
+                                    <div class="col mb-3 d-flex align-items-end">
+                                        <div class="form-label"></div>
+                                        <div class="form-check form-control d-flex justify-content-between align-items-center">
+                                            <label class="form-check-label">Background Event</label>
+                                            <input type="checkbox" id="eventBackground">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- PRIVATE FIELDS -->
+                                <div class="row d-none border-1" id="privateFields">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Coach ID</label>
+                                        <input type="number" id="eventCoachID" class="form-control">
+                                    </div>
+
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Client ID</label>
+                                        <input type="number" id="eventClientID" class="form-control">
+                                    </div>
+                                </div>
+                                
+                                <div class="row d-flex mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">Visibility</label>
+                                        <select id="eventVisibility" class="form-select">
+                                            <option value="Public">Public</option>
+                                            <option value="Private">Private</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6" style="align-content:flex-end">
+                                        <div class="form-label"></div>
+                                        <div class="form-check form-control d-flex justify-content-between align-items-center">
+                                            <label class="form-check-label">Apply to series</label>
+                                            <input type="checkbox" id="applySeries">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+                                <!-- FLAGS -->
+                                <div class="d-flex gap-4 mb-3">
+                                    <div class="form-check form-control d-flex justify-content-between align-items-center">
+                                        <label class="form-check-label">All Day</label>
+                                        <input type="checkbox" id="eventAllDay">
+                                    </div>
+                                    <div class="mb-3 form-check form-control d-flex justify-content-between align-items-center">
+                                        <label>Background Color</label>
+                                        <input type="color" id="eventBackgroundColor" class="form-control form-control-color rounded-color-input">
+                                    </div>
+
+                                </div>
+                                <div class="form-check form-control d-flex justify-content-between align-items-center">
+                                    <label class="form-check-label">Repeat</label>
+                                    <input type="checkbox" id="eventRecurring">
+                                </div>
+                                <!-- RECURRING -->
+                                <div class="border rounded p-3 d-none" id="recurringSection">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Frequency</label>
+                                        <select id="eventRepeatFrequency" class="form-select">
+                                            <option value="DAILY">Daily</option>
+                                            <option value="WEEKLY">Weekly</option>
+                                            <option value="MONTHLY">Monthly</option>
+                                            <option value="YEARLY">Yearly</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="eventRepeatDays" class="mb-3">
+                                        <label class="form-label">Repeat On</label>
+
+                                        <div class="d-flex flex-wrap gap-2 justify-content-between">
+                                            <label><input type="checkbox" value="MO"> Mon</label>
+                                            <label><input type="checkbox" value="TU"> Tue</label>
+                                            <label><input type="checkbox" value="WE"> Wed</label>
+                                            <label><input type="checkbox" value="TH"> Thu</label>
+                                            <label><input type="checkbox" value="FR"> Fri</label>
+                                            <label><input type="checkbox" value="SA"> Sat</label>
+                                            <label><input type="checkbox" value="SU"> Sun</label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="form-label">Ends</label>
+
+                                        <select id="eventRepeatEndType" class="form-select mb-2">
+                                            <option value="never">Never</option>
+                                            <option value="count">After occurrences</option>
+                                            <option value="until">On date</option>
+                                        </select>
+
+                                        <input type="number" id="eventRepeatCount" class="form-control mb-2" placeholder="Occurrences">
+
+                                        <input type="date" id="eventRepeatUntil" class="form-control">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-danger" id="deleteEvent">Delete</button>
+                    <button class="btn btn-primary" id="saveEvent">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    
+    @Html.Raw(@"
+    <script src = 'https://cdn.jsdelivr.net/npm/rrule@2.7.1/dist/es5/rrule.min.js'></script>
+    <script src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js'></script>
+    <script src = 'https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.20/index.global.min.js'></script>
+    ")
+    
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                timeZone: 'local',
+                initialView: 'timeGridWeek',
+                height: 550,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                nowIndicator: true,
+                selectable: true,
+                editable: true,
+
+                businessHours: {
+                    daysOfWeek: [1,2,3,4,5,6], // Monday-Saturday
+                    startTime: '06:00',
+                    endTime: '22:00'
+                },
+
+                selectAllow: function(selectInfo) {
+                    // Prevent selection on holidays/admin days
+                    var blocked = calendar.getEvents().filter(e => e.display === "background");
+                    for (let b of blocked) {
+                        if (selectInfo.start < b.end && selectInfo.end > b.start) {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+
+                // Load events from MVC (which calls the API)
+                events: '/Calendar/Events',
+
+                // open modal when clicking on a empty cell
+                select: function(info) {
+        
+                    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        
+                    const form = document.getElementById("eventForm");
+                    if (form) form.reset();
+        
+                    document.getElementById("eventId").value = "";
+        
+                    document.getElementById("eventStart").value =
+                        toLocalDatetimeInput(info.start);
+        
+                    document.getElementById("eventEnd").value =
+                        toLocalDatetimeInput(info.end);
+        
+                    modal.show();
+                },
+
+                // open modal when clicking on an event
+                eventClick: function(info) {
+                    const event = info.event;
+
+                    console.log(event.start);
+                    console.log(event.start.toISOString());
+                    console.log(event.start.toLocaleString());
+
+                    const isRecurring = !!event.extendedProps.rrule || !!event.extendedProps.recurring;
+
+                    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                    // Core properties
+                    document.getElementById("eventId").value = event.id;
+                    document.getElementById("eventTitle").value = event.title;
+                    document.getElementById("eventStart").value = toLocalDatetimeInput(event.start ? new Date(event.start) : null);
+        
+                    document.getElementById("eventEnd").value = toLocalDatetimeInput(event.end ? new Date(event.end) : new Date(event.start));
+                    document.getElementById("eventAllDay").checked = event.allDay;
+            
+                    // Extended props
+                    document.getElementById("eventType").value = event.extendedProps.type || "";
+                    document.getElementById("eventVisibility").value = event.extendedProps.visibility || "";
+                    document.getElementById("eventDescription").value = event.extendedProps.description || "";
+                    document.getElementById("eventCoachID").value = event.extendedProps.coachID || "";
+                    document.getElementById("eventClientID").value = event.extendedProps.clientID || "";
+                    document.getElementById("eventBackground").checked = event.extendedProps.isBackground || false;
+                    document.getElementById("eventBackgroundColor").value = event.extendedProps.backgroundColor || "#ffe6e6";
+            
+
+                    if(isRecurring){
+                        const applyAll = confirm("This is a recurring event. Click OK to apply changes to all future occurrences, Cancel to edit only this one.");
+                        document.getElementById("eventModal").dataset.applyAll = applyAll;
+                    } else {
+                        document.getElementById("eventModal").dataset.applyAll = false;
+                    }
+
+                    modal.show();
+                }
+            });
+
+            calendar.render();
+
+            // ---------------- SAVE EVENT ----------------
+            document.getElementById("saveEvent").addEventListener("click", async function () {
+
+            const id = document.getElementById("eventId").value;
+
+            // Gather weekly days if frequency is weekly
+            const repeatFrequency = document.getElementById("eventRepeatFrequency").value;
+            let repeatDays = [];
+            if (repeatFrequency === "WEEKLY") {
+                repeatDays = Array.from(document.querySelectorAll("#eventRepeatDays input[type='checkbox']:checked"))
+                                  .map(cb => cb.value); // e.g., "MO","TU"
+            }
+
+            // Determine Ends info
+            const repeatEndType = document.getElementById("eventRepeatEndType").value;
+            let repeatCount = null;
+            let repeatUntil = null;
+            if (repeatEndType === "count") {
+                repeatCount = parseInt(document.getElementById("eventRepeatCount").value) || null;
+            } else if (repeatEndType === "until") {
+                repeatUntil = document.getElementById("eventRepeatUntil").value || null;
+            }
+
+            // Build base DTO
+            let dto = {
+                Id: parseInt(id) || 0,
+                Title: document.getElementById("eventTitle").value,
+                Description: document.getElementById("eventDescription").value,
+                CoachID: document.getElementById("eventCoachID").value ? parseInt(document.getElementById("eventCoachID").value) : null,
+                ClientID: document.getElementById("eventClientID").value ? parseInt(document.getElementById("eventClientID").value) : null,
+                Start: document.getElementById("eventStart").value || null,
+                End: document.getElementById("eventEnd").value || null,
+                IsRecurring: document.getElementById("eventRecurring").checked,
+                IsAllDay: document.getElementById("eventAllDay").checked,
+                Type: document.getElementById("eventType").value,
+                Visibility: document.getElementById("eventVisibility").value,
+                BackgroundColor: document.getElementById("eventBackgroundColor").value,
+                IsBackground: document.getElementById("eventBackground").checked,
+                DaysOfWeek: null,
+                RRule: null,
+                GroupId: null,
+                EndRecur: null,
+                ExDates: null,
+            };
+
+            // --- Recurrence ---
+            const recurring = document.getElementById("eventRecurring").checked;
+                    if (recurring && repeatFrequency) {
+            const startDate = new Date(dto.Start);
+            const y = startDate.getUTCFullYear();
+            const m = String(startDate.getUTCMonth() + 1).padStart(2, "0");
+            const d = String(startDate.getUTCDate()).padStart(2, "0");
+            const h = String(startDate.getUTCHours()).padStart(2, "0");
+            const min = String(startDate.getUTCMinutes()).padStart(2, "0");
+            const s = String(startDate.getUTCSeconds()).padStart(2, "0");
+
+            let rruleParts = [`DTSTART=${y}${m}${d}T${h}${min}${s}Z`, `FREQ=${repeatFrequency}`];
+
+            // WEEKLY
+            if (repeatFrequency === "WEEKLY") {
+                if (repeatDays.length === 0) {
+                    alert("Select at least one weekday");
+                    return;
+                }
+                dto.DaysOfWeek = repeatDays.join(","); // for FullCalendar display
+                rruleParts.push(`BYDAY=${repeatDays.join(",")}`);
+            }
+
+            // MONTHLY
+            if (repeatFrequency === "MONTHLY") {
+                const dayOfMonth = startDate.getUTCDate();
+                rruleParts.push(`BYMONTHDAY=${dayOfMonth}`);
+            }
+
+            // YEARLY
+            if (repeatFrequency === "YEARLY") {
+                const day = startDate.getUTCDate();
+                const month = startDate.getUTCMonth() + 1;
+                rruleParts.push(`BYMONTH=${month}`);
+                rruleParts.push(`BYMONTHDAY=${day}`);
+            }
+
+            // COUNT ending
+            if (repeatCount) {
+                rruleParts.push(`COUNT=${repeatCount}`);
+            }
+
+            // UNTIL ending
+            if (repeatUntil) {
+                const dt = new Date(repeatUntil);
+                const utc = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000);
+                const y = utc.getUTCFullYear();
+                const m = String(utc.getUTCMonth() + 1).padStart(2, "0");
+                const d = String(utc.getUTCDate()).padStart(2, "0");
+                rruleParts.push(`UNTIL=${y}${m}${d}T235959Z`);
+                dto.EndRecur = utc.toISOString();
+            }
+
+            dto.RRule = rruleParts.join(";");
+        }
+
+            // --- Convert local datetime-local inputs to UTC ISO ---
+            if (dto.Start) dto.Start = new Date(dto.Start).toISOString();
+            if (dto.End) dto.End = new Date(dto.End).toISOString();
+
+            // --- Send request ---
+            const url = id ? '/Calendar/Update' : '/Calendar/Create';
+            const method = id ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
+
+            if (response.ok) {
+                calendar.refetchEvents();
+                bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+            } else {
+                alert("Failed to save event.");
+            }
+        });
+
+        
+
+            // ---------------- DELETE EVENT ----------------
+            document.getElementById("deleteEvent").addEventListener("click", async function() {
+                const id = document.getElementById("eventId").value;
+                if(!id) return;
+
+                const applySeries = document.getElementById("applySeries").checked;
+
+                const response = await fetch(`/Calendar/Delete/${id}?applySeries=${applySeries}`, { method: 'DELETE' });
+
+                if(response.ok){
+                    calendar.refetchEvents();
+                    bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+                } else {
+                    alert("Failed to delete event.");
+                }
+            });
+
+            // ---------------- CONVERT UTC TO LOCAL TIME ----------------
+            function toLocalDatetimeInput(date) {
+                if (!date) return "";
+                const pad = n => n.toString().padStart(2, '0');
+                return date.getFullYear() + '-' +
+                    pad(date.getMonth() + 1) + '-' +
+                    pad(date.getDate()) + 'T' +
+                    pad(date.getHours()) + ':' +
+                    pad(date.getMinutes());
+            }
+        });
+    </script>
+    
+    @* Show/Hide modal elements *@
+    <script>
+        // Elements
+        const eventType = document.getElementById("eventType");
+        const eventVisibility = document.getElementById("eventVisibility");
+        const privateFields = document.getElementById("privateFields");
+        const backgroundColorRow = document.getElementById("backgroundColor");
+
+        const repeatCheckbox = document.getElementById("eventRecurring");
+        const recurringSection = document.getElementById("recurringSection");
+
+        const repeatFrequency = document.getElementById("eventRepeatFrequency");
+        const repeatDays = document.getElementById("eventRepeatDays");
+
+        const repeatEndType = document.getElementById("eventRepeatEndType");
+        const repeatCount = document.getElementById("eventRepeatCount");
+        const repeatUntil = document.getElementById("eventRepeatUntil");
+
+        // --- Functions ---
+
+        // Show/hide private fields based on type
+        function togglePrivateFields() {
+            privateFields.classList.toggle("d-none", eventType.value !== "Private");
+        }
+
+        // Show/hide recurring section based on repeat checkbox
+        function toggleRecurringSection() {
+            recurringSection.classList.toggle("d-none", !repeatCheckbox.checked);
+        }
+
+        // Show/hide weekly day selectors based on frequency
+        function toggleWeeklyDays() {
+            repeatDays.classList.toggle("d-none", repeatFrequency.value !== "WEEKLY");
+        }
+
+        // Show/hide occurrence/date fields based on "Ends" select
+        function toggleEndFields() {
+            repeatCount.style.display = repeatEndType.value === "count" ? "block" : "none";
+            repeatUntil.style.display = repeatEndType.value === "until" ? "block" : "none";
+        }
+
+        // Set visibility automatically when type is Private
+        function setVisibility() {
+            if (eventType.value === "Private") {
+                eventVisibility.value = "Private";
+            }
+        }
+
+        // --- Event listeners ---
+        eventType.addEventListener("change", togglePrivateFields);
+        eventType.addEventListener("change", setVisibility);
+        repeatCheckbox.addEventListener("change", toggleRecurringSection);
+        repeatFrequency.addEventListener("change", toggleWeeklyDays);
+        repeatEndType.addEventListener("change", toggleEndFields);
+        
+
+        // --- Initialize visibility on modal open / page load ---
+        togglePrivateFields();
+        toggleRecurringSection();
+        toggleWeeklyDays();
+        toggleEndFields();
+        setVisibility();
+
+    </script>
+}

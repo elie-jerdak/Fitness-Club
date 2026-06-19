@@ -1,0 +1,128 @@
+﻿@model FitnessClub_Test.Dtos.ClassDTO
+
+@{
+    ViewData["Title"] = "Create Class";
+}
+
+<head>
+    <style>
+        .container div, .btn {
+            width: 100%;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            gap: 1em;
+        }
+
+        .text-danger {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<main>
+
+    <div class="container card w-75 my-4">
+        <div class="card-header">
+            <h2>Create New Class</h2>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" asp-controller="Class" method="post">
+
+                <!-- 🔴 SUMMARY (optional but recommended) -->
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="flex">
+                    <div class="form-group mb-3">
+                        <label>Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Type</label>
+                        <input asp-for="Type" class="form-control" />
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Description</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="flex">
+
+                    <div class="flex">
+                        <div class="form-group mb-3">
+                            <label>Start Date</label>
+                            <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>End Date</label>
+                            <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Recurrence</label>
+                        <select asp-for="Recurrence" class="form-control">
+                            @foreach (var item in ViewBag.Recurrence)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Recurrence" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="form-group mb-3">
+                        <label>Fee</label>
+                        <input asp-for="Fee" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="Fee" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Max Occupancy</label>
+                        <input asp-for="MaxOccupancy" type="number" class="form-control" />
+                        <span asp-validation-for="MaxOccupancy" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Coach</label>
+                    <select asp-for="CoachID" class="form-control">
+                        <option value="">-- Select Coach --</option>
+                        @foreach (var coach in ViewBag.Coaches)
+                        {
+                            <option value="@coach.Id">
+                                @coach.User.FirstName @coach.User.LastName
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="CoachID" class="text-danger"></span>
+                </div>
+
+                <div class="flex mb-3">
+                    <button type="submit" class="btn btn-primary">Create Class</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<!-- 🔥 REQUIRED FOR CLIENT-SIDE VALIDATION -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

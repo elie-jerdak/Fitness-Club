@@ -1,0 +1,84 @@
+﻿<html>
+<head>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f4; 
+            padding: 20px; 
+        }
+        .invoice-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 700px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+        }
+        .details {
+            margin-top: 30px;
+        }
+        .details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details th, .details td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class='invoice-box'>
+        <div class='header'>
+            <h2>Fitness Club</h2>
+            <p>fitnessClub@hotmail.com</p>
+        </div>
+
+        <h3>Invoice #{{invoiceNumber}}</h3>
+        <p>Date: {{paidAt:yyyy-MM-dd}}</p>
+
+        <h4>Billed To:</h4>
+        <p>
+            {{customerName}}<br />
+            {{customerEmail}}<br />
+            {{country}}
+        </p>
+
+        <div class='details'>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+                <tr>
+                    <td>Membership Payment</td>
+                    <td>{{amount}} {{currency}}</td>
+                </tr>
+                <tr class='total'>
+                    <td>Total</td>
+                    <td>{{amount}} {{currency}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <p>
+            Payment Method: {{cardBrand}} ending in {{last4}}<br />
+            Transaction ID: {{transactionId}}
+        </p>
+
+        <p>
+            Official Stripe receipt:<br />
+            <a href='{{receiptUrl}}'>{{receiptUrl}}</a>
+        </p>
+
+        <br />
+        <p>Thank you for your business!</p>
+    </div>
+</body>
+</html>

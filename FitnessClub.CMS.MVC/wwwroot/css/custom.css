@@ -1,0 +1,34 @@
+﻿.glassmorph {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.password-wrapper {
+    position: relative;
+    display: block;
+    z-index: 0;
+}
+
+.password-wrapper button {
+    position: absolute;
+    display: block;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+input.input-validation-error,
+select.input-validation-error,
+textarea.input-validation-error {
+    border: 1px solid #ff4d4d; /* optional thin red border */
+    box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.4); /* red glow */
+    outline: none;
+    transition: box-shadow 0.3s ease-in-out;
+}

@@ -1,0 +1,489 @@
+﻿@model FitnessClub_Test.Dtos.DashboardDTO
+
+<style>
+    /* Loading indicator styles */
+    .loading-indicator {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 500px;
+        color: #666;
+    }
+
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid #42A5F5;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+    }
+
+    /* Error message styles */
+    .error-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 500px;
+        text-align: center;
+        color: #d32f2f;
+    }
+
+        .error-message svg {
+            margin-bottom: 16px;
+        }
+
+        .error-message button {
+            margin-top: 16px;
+            padding: 8px 16px;
+            background-color: #42A5F5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .error-message button:hover {
+                background-color: #1E88E5;
+            }
+</style>
+<main class="app-main">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <h3 class="mb-0">Welcome @ViewBag.LayoutDTO.FirstName</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-primary shadow-sm">
+                            <i class="bi bi-people-fill"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Members</span>
+                            <span class="info-box-number">
+                                @Model.TotalMembersCount
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-danger shadow-sm">
+                            <i class="bi bi-alarm"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Upcoming Expirations</span>
+                            <span class="info-box-number">@Model.TotalNumberUpcomingExpirations</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-success shadow-sm">
+                            <i class="bi bi-cash-coin"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Net Profit</span>
+                            <span class="info-box-number">@Model.Revenue</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-warning shadow-sm">
+                            <i class="bi bi-cash-stack"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Expenses</span>
+                            <span class="info-box-number">@Model.Expenses</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Calendar</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                                <div class="btn-group">
+                                    <button type="button"
+                                            class="btn btn-tool dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                        <i class="bi bi-wrench"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                                        <a href="#" class="dropdown-item">Add An Event</a>
+                                        <a href="#" class="dropdown-item">Add A Holiday</a>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" id="today">
+                                    <i class="bi bi-calendar-date"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="calendar">
+                                    <div class="header">
+                                        <div id="prev" class="btn">
+                                            <i class="bi bi-arrow-left"></i>
+                                        </div>
+                                        <div id="month-year"></div>
+                                        <div id="next" class="btn">
+                                            <i class="bi bi-arrow-right"></i>
+                                        </div>
+                                    </div>
+                                    <div class="weekdays">
+                                        <div>Sun</div>
+                                        <div>Mon</div>
+                                        <div>Tue</div>
+                                        <div>Wed</div>
+                                        <div>Thu</div>
+                                        <div>Fri</div>
+                                        <div>Sat</div>
+                                    </div>
+                                    <div class="days" id="days"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Latest Members</h3>
+                                    <div class="card-tools">
+                                        <span class="badge text-bg-info"> @Model.latestMembersCount New Members </span>
+                                        <button type="button"
+                                                class="btn btn-tool"
+                                                data-lte-toggle="card-collapse">
+                                            <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                            <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    @if (Model?.latestMembers != null && Model.latestMembers.Any())
+                                    {
+                                        <div class="row text-center m-1">
+                                            @foreach (var member in Model.latestMembers)
+                                            {
+                                                var today = DateOnly.FromDateTime(DateTime.Today);
+
+                                                var dateText =
+                                                member.StartDate == today ? "Today"
+                                                : member.StartDate == today.AddDays(-1) ? "Yesterday"
+                                                : member.StartDate.ToString("MMM dd");
+
+                                                <div class="col-3 p-2">
+                                                    <img class="img-fluid rounded-circle"
+                                                         src="@Url.Content($"~/assets/profileimages/{member.Photo ?? "default.png"}")"
+                                                         alt="@(string.IsNullOrEmpty(member.First_Name) ? "Member" : member.First_Name)"
+                                                         style="width: 100px; height: 100px; object-fit: cover;" />
+
+                                                    <a class="btn fw-bold fs-7 text-secondary text-truncate w-100 p-0" href="#">
+                                                        @(string.IsNullOrEmpty(member.First_Name) ? "Unknown" : member.First_Name)
+                                                    </a>
+
+                                                    <div class="fs-8">@dateText</div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted text-center p-4">No recent members</div>
+                                    }
+                                </div>
+                                <div class="card-footer text-center">
+                                    <a asp-controller="Member" asp-action="Index" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View All Members</a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-action="Create" asp-controller="Member" class="text-decoration-none">
+                                <div class="info-box mb-3 text-bg-warning">
+                                    <span class="info-box-icon"> <i class="bi bi-plus-circle"></i> </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Add Member</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a asp-action ="Create" asp-controller="Coach" class="text-decoration-none">
+                                <div class="info-box mb-3 text-bg-success">
+                                    <span class="info-box-icon"> <i class="bi bi-plus-circle"></i> </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Add Coach</span>
+                                    </div>
+                                </div>
+                            </a>    
+                            <a asp-action="Create" asp-controller="PremadePrograms" class="text-decoration-none">
+                                <div class="info-box mb-3 text-bg-danger">
+                                    <span class="info-box-icon"> <i class="bi bi-plus-circle"></i> </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Create A Training Program</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a asp-action"Details" asp-controller="Coach" class="text-decoration-none">
+                                <div class="info-box mb-3 text-bg-info">
+                                    <span class="info-box-icon"> <i class="bi bi-plus-circle"></i> </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">View Coach Information</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Weekly User Presence Heatmap</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-remove">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+
+                            <div class="filters my-2">
+                                <label>
+                                    Role:
+                                    <select id="RoleFilter">
+                                        <option value="">All</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Client">Client</option>
+                                        <option value="Coach">Coach</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    Gender:
+                                    <select id="genderFilter">
+                                        <option value="">All</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    From:
+                                    <input type="date" id="startDate">
+                                </label>
+
+                                <label>
+                                    To:
+                                    <input type="date" id="endDate">
+                                </label>
+                                    
+                                 <button class="btn-secondary" onclick="applyFilters()">Apply Filters</button>
+                                 <button class="btn-secondary" onclick="resetFilters()">Reset Filters</button>
+                            </div>
+                        
+                        </div>
+                               
+                            <div id="chart"></div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+<script src="~/js/calendar-js.js"></script>
+
+
+<!--Apex Charts-->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+     
+    let chart = null;
+    const chartContainer = document.querySelector("#chart");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setDefaultDates();
+      applyFilters(); // Load initial filtered chart
+    });
+
+    function setDefaultDates() {
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 6); // past 7 days
+      document.getElementById("startDate").value = startDate.toISOString().split('T')[0];
+      document.getElementById("endDate").value = endDate.toISOString().split('T')[0];
+    }
+
+    function resetFilters() {
+      document.getElementById("RoleFilter").value = "";
+      document.getElementById("genderFilter").value = "";
+      setDefaultDates();
+      applyFilters();
+    }
+
+    async function applyFilters() {
+      const role = document.getElementById("RoleFilter").value;
+      const gender = document.getElementById("genderFilter").value;
+      const start = document.getElementById("startDate").value;
+      const end = document.getElementById("endDate").value;
+
+      const query = new URLSearchParams();
+      if (role) query.append("role", role);
+      if (gender) query.append("gender", gender);
+      if (start) query.append("startDate", start);
+      if (end) query.append("endDate", end);
+
+      await loadHeatmapData(query.toString());
+    }
+
+    async function loadHeatmapData(queryString = "") {
+      
+
+      const loadingIndicator = document.createElement("div");
+      loadingIndicator.className = "loading-indicator";
+      loadingIndicator.innerHTML = `
+        <div class="spinner"></div>
+        <p>Loading heatmap data...</p>
+      `;
+
+      try {
+
+        // Show loading state
+        chartContainer.innerHTML = "";
+        chartContainer.appendChild(loadingIndicator);
+
+        const url = `https://localhost:7100/api/heatmap/weekly${queryString ? "?" + queryString : ""}`;
+        const token = window.authToken;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!response.ok){
+            if(response.status === 401){
+                window.location.href = "/Login/Bridge";
+                return;
+            } else {
+                throw new Error(response.status === 404 ? "Not Found" : "Failed to fetch data");
+            }
+        }
+        const series = await response.json();
+        chartContainer.innerHTML = "";
+
+        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        const options = {
+          chart: {
+            height: 500,
+            type: 'heatmap',
+            animations: {
+              enabled: true,
+              easing: 'easeinout',
+              speed: 800
+            }
+          },
+          plotOptions: {
+            heatmap: {
+              shadeIntensity: 0.5,
+              colorScale: {
+                ranges: [
+                  { from: 0, to: 0, name: '0 users', color: '#f2f2f2' },
+                  { from: 1, to: 5, name: '1-5 users', color: '#90CAF9' },
+                  { from: 6, to: 10, name: '6-10 users', color: '#42A5F5' },
+                  { from: 11, to: 15, name: '11-15 users', color: '#1E88E5' }
+                ]
+              }
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          xaxis: {
+            categories: days,
+            title: {
+              text: 'Day of the Week'
+            }
+          },
+          yaxis: {
+            title: {
+              text: 'Time Slot'
+            }
+          },
+          tooltip: {
+            y: {
+              formatter: val => `${val} user(s)`
+            }
+          },
+          series: series,
+          noData: {
+            text: 'No data available',
+            align: 'center',
+            verticalAlign: 'middle',
+            style: {
+              color: '#666',
+              fontSize: '16px'
+            }
+          }
+        };
+
+        if (chart) {
+          chart.updateOptions(options);
+        } else {
+          chart = new ApexCharts(chartContainer, options);
+          chart.render();
+        }
+
+      } catch (err) {
+        chartContainer.innerHTML = `
+          <div class="error-message">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p>${err.message}</p>
+            <button onclick="applyFilters()">Retry</button>
+          </div>
+        `;
+        console.error("Error loading heatmap data:", err);
+      }
+    }
+</script>

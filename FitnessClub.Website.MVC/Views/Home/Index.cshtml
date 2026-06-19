@@ -1,0 +1,185 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Home";
+}
+
+<main>
+    <!--? slider Area Start-->
+    <div class="slider-area position-relative">
+        <div class="slider-active">
+            <!-- Single Slider -->
+            <div class="single-slider slider-height d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-9 col-lg-9 col-md-10">
+                            <div class="hero__caption">
+                                <span data-animation="fadeInLeft" data-delay="0.1s">Hi This is Zacson</span>
+                                <h1 data-animation="fadeInLeft" data-delay="0.4s">Gym Trainer</h1>
+                                <a href="classes.html" class="border-btn hero-btn" data-animation="fadeInLeft" data-delay="0.8s">My Courses</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training categories Start -->
+    <section class="traning-categories black-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/cat1.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>Personal training</h3>
+                                    <p>You’ll look at graphs and charts in Task One, how to approach the task and<br> the language needed for a successful answer.</p>
+                                    <a href="classes.html" class="border-btn">View Courses</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6">
+                    <div class="single-topic text-center mb-30">
+                        <div class="topic-img">
+                            <img src="~/img/gallery/cat2.png" alt="">
+                            <div class="topic-content-box">
+                                <div class="topic-content">
+                                    <h3>Group training</h3>
+                                    <p>You’ll look at graphs and charts in Task One, how to approach the task and<br> the language needed for a successful answer.</p>
+                                    <a href="classes.html" class="btn">View Courses</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Training categories End -->
+
+    <!-- Team 
+    <section class="team-area fix">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="section-tittle text-center mb-55 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                        <h2>What I Offer</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                
+                <partial name="_Services" />
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Gallery Area Start 
+    <div class="gallery-area section-padding30">
+        <div class="container-fluid">
+            <div class="row">
+                <partial name="_Gallery" />
+            </div>
+        </div>
+    </div>-->
+
+    <!-- Courses area start
+    <section class="pricing-area section-padding40 fix">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="section-tittle text-center mb-55 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".1s">
+                        <h2>Pricing</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <partial name="_Pricing" />
+            </div>
+        </div>
+    </section> -->
+
+    <!-- About Area-2 Start -->
+    <section class="about-area2 fix pb-padding pt-50 pb-80">
+        <div class="support-wrapper align-items-center">
+            <div class="right-content2">
+                <div class="right-img wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                    <img src="~/img/gallery/about.png" alt="">
+                </div>
+            </div>
+            <div class="left-content2">
+                <div class="section-tittle2 mb-20 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
+                    <div class="front-text">
+                        <h2>About Me</h2>
+                        <p>You’ll look at graphs and charts in Task One, how to approach the task and the language needed for a successful answer.</p>
+                        <p class="mb-40">Task One, how to approach the task and the language needed for a successful answer.</p>
+                        <a href="courses.html" class="border-btn">My Courses</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Area Start 
+    <section class="home-blog-area pt-10 pb-50">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-9 col-sm-10">
+                    <div class="section-tittle text-center mb-100 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".2s">
+                        <h2>From Blog</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <partial name="_Blog" />
+            </div>
+        </div>
+    </section>-->
+
+    <!-- Video Start -->
+    <div class="video-area section-bg2 d-flex align-items-center" style="background-image: url('@Url.Content("~/img/gallery/video-bg.png")');">
+        <div class="container">
+            <div class="video-wrap position-relative">
+                <div class="video-icon">
+                    <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=up68UAfH0d0"><i class="fas fa-play"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact/Services Area -->
+    <section class="services-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                        <div class="features-caption">
+                            <h3>Location</h3>
+                            <p>Still loading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="features-caption">
+                            <h3>Phone</h3>
+                            <a href="tel:+96181123456">+961 81 123 456</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                        <div class="features-caption">
+                            <h3>Email</h3>
+                            <a href="mailto:fitnessclub@gmail.com">fitnessclub@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

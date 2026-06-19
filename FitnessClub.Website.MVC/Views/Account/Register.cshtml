@@ -1,0 +1,168 @@
+﻿@using YourProjectNamespace.Models
+@model FitnessClub.Website.MVC.Models.RegisterViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Register";
+}
+
+<main>
+    <!-- Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>@ViewData["Title"]</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+    <!-- Sign In/Up -->
+    <div class="signcontainer" id="signcontainer">
+        <div class="form-signcontainer sign-up-signcontainer">
+            <form asp-action="Register" method="post">
+                <h1>Create Account</h1>
+                <input asp-for="FirstName" placeholder="First Name" />
+                <span asp-validation-for="FirstName"></span>
+                <input asp-for="LastName" placeholder="Last Name" />
+                <span asp-validation-for="LastName"></span>
+                <input asp-for="Dob" type="date" placeholder="Date of Birth" />
+                <span asp-validation-for="Dob"></span>
+                <input asp-for="Email" type="email" placeholder="Email" />
+                <span asp-validation-for="Email"></span>
+                <input asp-for="PhoneNumber" placeholder="Phone Number" />
+                <span asp-validation-for="PhoneNumber"></span>
+                <input asp-for="Password" type="password" placeholder="Password" />
+                <span asp-validation-for="Password"></span>
+                <select asp-for="Gender" asp-items="ViewBag.Genders"></select>
+                <span asp-validation-for="Gender"></span>
+                <br>
+                <select id="RoleSelect" asp-for="Role" asp-items="ViewBag.Roles"></select>
+                <span asp-validation-for="Role"></span>
+                <br>
+
+                <div id="clientFields" style="display:none;">
+                    <h4>Client Info</h4>
+                    <input asp-for="Height" placeholder="Height" />
+                    <span asp-validation-for="Height"></span>
+                    <input asp-for="Weight" placeholder="Weight" />
+                    <span asp-validation-for="Weight"></span>
+                    <input asp-for="Target" placeholder="Target" />
+                    <span asp-validation-for="Target"></span>
+                    <input asp-for="MedicalHistory" placeholder="Medical History"></textarea>
+                    <span asp-validation-for="MedicalHistory"></span>
+                </div>
+
+
+                <div id="coachFields" style="display:none;">
+                    <h4>Coach Info</h4>
+                    <input asp-for="Experience" placeholder="Experience" />
+                    <span asp-validation-for="Experience"></span>
+                    <input asp-for="Specialty" placeholder="Specialty" />
+                    <span asp-validation-for="Specialty"></span>
+                    <input asp-for="Salary" placeholder="Salary" />
+                    <span asp-validation-for="Salary"></span>
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+
+            @section Scripts {
+                <script>
+                    $(function () {
+                        function toggleFields() {
+                            const val = $('#RoleSelect').val();
+                            $('#clientFields').toggle(val === 'Client');
+                            $('#coachFields').toggle(val === 'Coach');
+                        }
+
+                        $('#RoleSelect').on('change', toggleFields);
+                        toggleFields(); // on page load
+                    });
+                </script>
+                <partial name="_ValidationScriptsPartial" />
+            }
+        </div>
+
+        <div class="form-signcontainer sign-in-signcontainer">
+            <form asp-action="Login" method="post">
+                <h1>Log in</h1>
+                <br>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="Email" placeholder="Email" />
+                <span asp-validation-for="Email"></span>
+                <input asp-for="Password" placeholder="Password" type="password" />
+                <span asp-validation-for="Password"></span>
+                <a href="@Url.Action(" ForgotPassword", "Account")">Forgot your password?</a>
+                <button type="submit">Login</button>
+            </form>
+
+            @if (TempData["LoginError"] != null)
+            {
+                <div class="alert alert-danger">@TempData["LoginError"]</div>
+            }
+
+        </div>
+
+        <div class="overlay-signcontainer">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1 style="color: white;">Welcome Back!</h1>
+                    <p style="color: white;">To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Log In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1 style="color: white;">Hello, Friend!</h1>
+                    <p style="color: white;">Enter your personal details and start journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Area (Commented Out) -->
+    @*
+    <section class="services-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon1.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Location</h3>
+                            <p>Still loading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon2.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Phone</h3>
+                            <p>+961 81 123 456</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                        <div class="features-icon">
+                            <img src="~/lib/img/icon/icon3.svg" alt="">
+                        </div>
+                        <div class="features-caption">
+                            <h3>Email</h3>
+                            <p>fitnessclub@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    *@
+</main>

@@ -1,0 +1,113 @@
+﻿@model List<FitnessClub_Test.Dtos.PremadeProgramsDTO>
+@{
+    var toastMessage = TempData["Success"] as string;
+}
+<head>
+    <style>
+        .clickable-row {
+            cursor: pointer;
+        }
+
+            .clickable-row:hover td {
+                background-color: #f2f2f2; /* Light grey background on hover */
+                transition: background-color 0.2s ease-in-out;
+            }
+    </style>
+</head>
+
+<main class="app-main">
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin: Row -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Premade Training Programs</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                                <a asp-controller="PremadePrograms" asp-action="Create" class="btn btn-primary" >
+                                    <i class="bi bi-pencil-square"></i>Create
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="w-100 table">
+                                <thead>
+                                    <tr>
+                                        <th style="display:none"></th>
+                                        <th style="width:20%">Title</th>
+                                        <th style="width:15%">Category</th>
+                                        <th style="padding-left:2%" colspan="2">Program Duration</th>
+                                        <th>Owner</th>
+                                        <th>Price</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model == null || !Model.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="8" class="text-center">
+                                                <p>There are no premade programs</p>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr class="clickable-row"
+                                                data-href="@Url.Action("Details", "PremadePrograms", new { programId = item.ID })">
+
+                                                <td style="display:none">@item.ID</td>
+                                                <td>@item.Title</td>
+                                                <td>@item.Category</td>
+                                                <td style="text-align:center">@item.Duration</td>
+                                                <td>Minutes</td>
+                                                <td>@item.Owner</td>
+
+                                                @if (item.Price == 0)
+                                                {
+                                                    <td>Free</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@item.Price</td>
+                                                }
+
+                                                <td>
+                                                    <form asp-action="Delete" method="post" asp-controller="PremadePrograms">
+                                                        <input type="hidden" name="id" value="@item.ID" />
+                                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+</main>
+@section Scripts {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".clickable-row").forEach(row => {
+                row.addEventListener("click", () => {
+                    window.location = row.dataset.href;
+                });
+            });
+        });
+    </script>
+}

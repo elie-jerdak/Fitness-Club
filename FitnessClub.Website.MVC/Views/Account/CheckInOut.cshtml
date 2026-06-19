@@ -1,0 +1,41 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Check In/Out";
+}
+
+<main>
+    <!-- Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>@ViewData["Title"]</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <section class="traning-categories black-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="single-topic text-center mb-30">
+                    <div class="topic-img">
+                        <img src="~/img/gallery/cat1.png" alt="">
+                        <div class="topic-content-box">
+                            <div class="topic-content">
+                                <h2 style="color: rgb(169, 12, 12);">Status</h2>
+                                <h3>@ViewBag.Message</h3>
+                                <a href="~/" class="border-btn"> ⬅ Back to Home</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,401 @@
+﻿@using FitnessClub_Test.Dtos
+@model FitnessClub_Test.Dtos.PremadeProgramsDTO
+@{
+    var exercises = ViewBag.Exercises as List<ExerciseDTO>;
+}
+<head>
+    <style>
+        label, input {
+            margin-bottom: 0.5rem;
+        }
+
+        .program-container {
+            border: 1px solid;
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .img-container {
+            border: 1px solid black;
+            border-radius: 25px;
+            position: relative;
+            margin: 0;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .program-attributes {
+            position: relative;
+            border: 1px solid black;
+            border-top: none;
+            transform: translateY(-58px);
+            margin: 0;
+            padding-top: 2em;
+            z-index: 1;
+        }
+
+        img {
+            height: 380px;
+            border-radius: 25px;
+            padding: 0;
+        }
+
+        .exercise-container-row {
+            margin: 0;
+        }
+
+    </style>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/48.0.1/ckeditor5.css" crossorigin>
+
+</head>
+<main class="app-main">
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row mx-4">
+                <form id="editForm" method="post" asp-controller="PremadePrograms" asp-action="UpdatePremadeProgram">
+                    @Html.AntiForgeryToken()
+                    <div class="row my-4 d-flex justify-content-around ">
+                        <input type="hidden" asp-for="ID" value="@Model.ID"/>
+                        @* Program Information *@
+                        <div class="col-8 program-container">
+
+                            @* Title, Category, Coach Name, Price *@
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div>
+                                        <label asp-for="Title"></label>
+                                        <input id="Title" type="text" asp-for="Title" class="form-control" readonly/>
+                                        <span asp-validation-for="Title" class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <label asp-for="Category"></label>
+                                        <input id="Category" type="text" asp-for="Category" class="form-control" readonly />
+                                        <span asp-validation-for="Category" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div>
+                                        <label asp-for="CoachID">Owner</label>
+                                        <select asp-for="CoachID"
+                                                class="form-control"
+                                                asp-items="ViewBag.Coaches"
+                                                disabled>
+                                            <option value="">-- Select Coach --</option>
+                                        </select>
+                                        <span asp-validation-for="CoachID" class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <label asp-for="Price"></label>
+                                        <input id="Price" type="number" asp-for="Price" class="form-control" readonly />
+                                        <span asp-validation-for="Price" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @* Image *@
+                            <div class="row mb-4 img-container">
+                                <img src="@Url.Content($"~/assets/profileimages/{Model?.CoverImage ?? "default.png"}")" id="imagePreview" style="padding:0" />
+                                <button class="btn btn-primary my-4 w-75 d-none" id="addPhotoBtn" type="button" onclick="document.getElementById('fileInput').click()">Add Photo</button>
+                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+
+                                <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="convertToBase64(event)" />
+
+                                <input type="hidden" id="CoverImageBase64" name="CoverImageBase64" />
+                                <input type="hidden" id="CoverImageName" name="CoverImageName" />
+                            </div>
+
+                            @* Level, Intensity, Number of Exercises, Duration*@
+                            <div class="row rounded-bottom-5 program-attributes px-4">
+                                <div class="col-3">
+                                    <div>
+                                        <label asp-for="Level"></label>
+                                        <select asp-for="Level" class="form-control" asp-items="ViewBag.LevelOptions" disabled>
+                                            <option value="">-- Select Level --</option>
+                                        </select>
+                                        <span asp-validation-for="Level" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                                <div class="col-3">
+                                    <div>
+                                        <label asp-for="Intensity"></label>
+                                        <select asp-for="Intensity" class="form-control" asp-items="ViewBag.IntensityOptions" disabled>
+                                            <option value="">-- Select Intensity --</option>
+                                        </select>
+                                        <span asp-validation-for="Intensity" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                                <div class="col-3">
+                                    <div>
+                                        <label asp-for="NumberOfExercises"></label>
+                                        <input id="NumberOfExercises" type="number" asp-for="NumberOfExercises" class="form-control keep-readonly" readonly />
+                                        <span asp-validation-for="NumberOfExercises" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div>
+                                        <label asp-for="Duration"></label>
+                                        <input id="Duration" type="number" asp-for="Duration" class="form-control keep-readonly" readonly />
+                                        <span asp-validation-for="Duration" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @* About, Equipment, Benefits*@
+                            <div class="row">
+                                <div>
+                                    <label asp-for="Description"></label>
+                                    <input id="Description" type="text" asp-for="Description" class="form-control" readonly />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div>
+                                    <label asp-for="EquipmentNeeded"></label>
+                                    <div class="main-container">
+                                        <!-- Equipment Needed editor -->
+                                        <div class="editor-container editor-container_inline-editor" id="editor-container1">
+                                            <div class="editor-container__editor">
+                                                <div id="editor1"></div>
+                                                <input type="hidden" id="Content1" name="EquipmentNeeded" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="EquipmentNeeded" class="text-danger"></span>
+                                    <!-- Benefits editor -->
+                                    <br /><label asp-for="Benefits"></label>
+                                    <div class="editor-container editor-container_inline-editor" id="editor-container2">
+                                        <div class="editor-container__editor">
+                                            <div id="editor2"></div>
+                                            <input type="hidden" id="Content2" name="Benefits" />
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="Benefits" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* Exercises *@
+                        <div class="col-3">
+                            <div class="row mb-4 exercise-container-row">
+                                <h3>Exercises</h3>
+                                <div class="p-0">
+                                    <div class="card-body d-flex justify-content-center flex-column">
+                                        <!-- RENDERED EXERCISES LIST -->
+                                        <div id="selectedExercisesList" class="mb-3"></div>
+
+                                        <button id="openExerciseModalBtn" type="button"
+                                                class="btn btn-primary d-none"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addExerciseModal" >
+                                            Edit Exercises
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Add Exercise Modal *@
+                    <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header d-flex justify-content-between">
+                                    <h5 class="modal-title">Add Exercise</h5>
+                                    <button type="button" class="btn-close ms-0 d-none" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select Exercise</label>
+                                        <select id="exerciseDropdown" class="form-select">
+                                            <option value="">-- Select an exercise --</option>
+                                            @* Filled from server *@
+                                            @if (exercises != null && exercises.Count > 0)
+                                            {
+                                                foreach (var exercise in exercises)
+                                                {
+                                                    <option value="@exercise.ExerciseID">@exercise.Name</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option disabled>No exercises available</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div id="exerciseRows" class="mt-3"></div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="addExerciseBtn" style="display:none">
+                                        Add
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Submit Button *@
+                    <div class="row mb-4" style="display:flex;justify-content:center">
+                        <a asp-controller="PremadePrograms" asp-action="Index" class="btn btn-secondary w-25">Back</a>
+                        <button type="submit" id="saveBtn" class="btn btn-primary w-25 me-2">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @* CK editor Scripts *@
+    <script src="https://cdn.ckeditor.com/ckeditor5/48.0.1/ckeditor5.umd.js" crossorigin></script>
+    <script src="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js"></script>
+    <script src="~/js/main.js"></script>
+
+    @* Exercise Injecion *@
+    <script>
+        window.initialExercises = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(
+                        Model.Exercises ?? new List<ProgramExerciseDTO>()
+                )
+        );
+    </script>
+
+    @* Add Exercise Script *@
+    <script src="~/js/addExercise.js"></script>
+
+    @* Getting filled Data from the editors *@
+    <script>
+                document.addEventListener('DOMContentLoaded', () => {
+
+            const editors = [
+                {
+                    editorId: '#editor1',
+                    inputId:  '#Content1',
+                    initialData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EquipmentNeeded ?? ""))
+                },
+                {
+                    editorId: '#editor2',
+                    inputId:  '#Content2',
+                    initialData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Benefits ?? ""))
+                }
+            ];
+
+            editors.forEach(cfg => {
+                const editorEl = document.querySelector(cfg.editorId);
+                const inputEl  = document.querySelector(cfg.inputId);
+
+                if (!editorEl || !inputEl) return;
+
+                InlineEditor.create(editorEl, buildConfig(cfg.initialData))
+                    .then(editor => {
+                        // Sync to hidden input immediately on load
+                        inputEl.value = editor.getData();
+
+                        // Keep syncing on every change
+                        editor.model.document.on('change:data', () => {
+                            inputEl.value = editor.getData();
+                        });
+                    })
+                    .catch(console.error);
+            });
+
+        });
+    </script>
+
+    @* Image Convert Script *@
+    <script>
+        let base64Image = null;
+        let imageFileName = null;
+
+        function convertToBase64(event) {
+            try{
+
+            const file = event.target.files[0];
+            if (!file) {
+                base64Image = null;
+                imageFileName = null;
+                return;
+            }
+            imageFileName = file.name;
+
+            console.log(imageFileName);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64Image = e.target.result.split(",")[1]; // Remove data prefix
+                console.log("Base64 string ready", base64Image);
+
+                // Optionally, set to a hidden input to submit with the form
+                document.getElementById("CoverImageBase64").value = base64Image;
+                document.getElementById("CoverImageName").value = imageFileName;
+            };
+            reader.readAsDataURL(file);
+
+            // Also update preview
+            const preview = document.getElementById("imagePreview");
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+            } catch (err){
+                console.log("Error resulting from convertToBase64 : ", err);
+            }
+        }
+    </script>
+
+    @* Show buttons Script *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let isEditMode = false;
+
+            const editBtn = document.getElementById("saveBtn");
+            const addExerciseBtn = document.getElementById("openExerciseModalBtn");
+            const addPhotoBtn = document.getElementById("addPhotoBtn");
+
+            const form = document.getElementById("editForm");
+
+            editBtn.addEventListener("click", function (e) {
+
+                if (!isEditMode) {
+                    // First click = SWITCH TO EDIT MODE
+                    e.preventDefault(); // prevent submit
+
+                    isEditMode = true;
+
+                    // Enable inputs
+                    form.querySelectorAll("input, textarea").forEach(el => {
+                        if (!el.classList.contains("keep-readonly")) {
+                            el.removeAttribute("readonly");
+                        }
+                    });
+
+                    // Enable selects
+                    form.querySelectorAll("select").forEach(el => {
+                        el.removeAttribute("disabled");
+                    });
+
+                    // Show buttons
+                    addExerciseBtn.classList.remove("d-none");
+                    addPhotoBtn.classList.remove("d-none");
+
+                    // Change button text
+                    editBtn.textContent = "Save";
+
+                } else {
+                    // Second click = SUBMIT FORM
+                    form.submit();
+                }
+
+            });
+        });
+    </script>
+
+}

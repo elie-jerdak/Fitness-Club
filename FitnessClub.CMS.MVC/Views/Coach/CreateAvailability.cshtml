@@ -1,0 +1,59 @@
+﻿@model FitnessClub_Test.Dtos.CreateAvailabilityViewModel
+@{
+    var today = DateTime.Today;
+    var StartTime = DateTime.Now.ToString("HH:mm:ss");
+    var EndTime = StartTime + 1;
+}
+<style>
+    form div {
+        margin-bottom: 1rem;
+    }
+</style>
+<main class="app-main">
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin: Row -->
+            <div class="row mt-4" style="justify-content:center">
+                <div class="col-md-6">
+                    <!--begin Member View-->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Create Avaialbility</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form asp-controller="coach" asp-action="CreateAvailability" method="post">
+                                <input asp-for="CoachUserId" type="hidden" value="@Model.CoachUserId" />
+
+                                <div class="form-group">
+                                    <label asp-for="Day"></label>
+                                    <input asp-for="Day" type="date" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="StartTime">Start Time</label>
+                                    <input asp-for="StartTime" type="time" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="EndTime">End Time</label>
+                                    <input asp-for="EndTime" type="time" class="form-control" />
+                                </div>
+                                <div class="d-flex justify-content-evenly">
+                                    <button type="submit" class="btn btn-primary w-25">Save</button>
+                                    <a asp-controller="Coach" asp-action="Details" asp-route-userId="@Model.CoachUserId" class="btn btn-secondary w-25">Back</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

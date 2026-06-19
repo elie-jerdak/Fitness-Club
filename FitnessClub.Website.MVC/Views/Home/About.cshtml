@@ -1,0 +1,155 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "About Us";
+}
+
+<main>
+    <!-- Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>About Us</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <!-- About Area-2 Start -->
+    <section class="about-area2 fix pb-padding pt-50 pb-80">
+        <div class="support-wrapper align-items-center">
+            <div class="right-content2 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                <!-- img -->
+                <div class="right-img">
+                    <img src="~/img/gallery/about.png" alt="">
+                </div>
+            </div>
+            <div class="left-content2">
+                <!-- section title -->
+                <div class="section-tittle2 mb-20 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
+                    <div class="front-text">
+                        <h2>Our Story</h2>
+                        <p>Fitness Club was founded to redefine how people experience fitness. From our humble
+                            beginnings, we’ve grown into a modern fitness hub that blends technology with personal
+                            training, helping members stay motivated and connected every step of the way.</p>
+
+                        <h2>Our Facilities</h2>
+                        <p class="mb-40">Our state-of-the-art facilities include spacious workout zones, dedicated
+                            studios for group classes, personal training suites, and high-quality equipment designed for
+                            beginners and athletes alike.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container h-100 mt-5">
+                <div class="row h-100 justify-content-center align-items-center">
+                    <div class="col-12 text-center">
+                        <a asp-controller="Services" asp-action="Classes" class="border-btn m-2">Classes</a>
+                        <a asp-controller="Services" asp-action="Premade" class="border-btn m-2">Premade Programs</a>
+                        <a asp-controller="Services" asp-action="Private" class="border-btn m-2">Private Sessions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About Area End -->
+
+    <!-- Blog Area Start -->
+    <section class="home-blog-area pt-10 pb-50">
+        <div class="container">
+            <!-- Section Title -->
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-9 col-sm-10">
+                    <div class="section-tittle text-center mb-100 wow fadeInUp" data-wow-duration="2s"
+                        data-wow-delay=".2s">
+                        <h2>Smart Member Experience</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="home-blog-single mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="blog-img-cap">
+                            <div class="blog-img">
+                                <img src="~/img/gallery/blog1.png" alt="">
+                            </div>
+                            <div class="blog-cap">
+                                <span>Gym & Fitness</span>
+                                <h3><a href="#">Log your workouts and get AI-generated summaries.</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="home-blog-single mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">
+                        <div class="blog-img-cap">
+                            <div class="blog-img">
+                                <img src="~/img/gallery/blog2.png" alt="">
+                            </div>
+                            <div class="blog-cap">
+                                <span>Gym & Fitness</span>
+                                <h3><a href="#">Renew your subscription online and check in seamlessly with your digital
+                                        membership card and QR code.</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Area End -->
+
+    <!-- Video Start -->
+    <div class="video-area section-bg2 d-flex align-items-center"
+        style="background-image: url('@Url.Content("~/img/gallery/video-bg.png")');">
+        <div class="container">
+            <div class="video-wrap position-relative">
+                <div class="video-icon">
+                    <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=up68UAfH0d0">
+                        <i class="fas fa-play"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Video End -->
+
+    <!-- Services Area -->
+    <section class="services-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                        <div class="features-caption">
+                            <h3>Location</h3>
+                            <p>Still loading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="features-caption">
+                            <h3>Phone</h3>
+                            <a href="tel:+96181123456">+961 81 123 456</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                        <div class="features-caption">
+                            <h3>Email</h3>
+                            <a href="mailto:fitnessclub@gmail.com">fitnessclub@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,571 @@
+﻿@using FitnessClub_Test.Dtos
+@model FullCoachDTO;
+@{
+    double rating = Model.Rating; 
+    int fullStars = (int)Math.Floor(rating);
+    bool hasHalfStar = (rating - fullStars) > 0;
+    int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+}
+<head>
+    <style>
+        .custom td, .custom th {
+            text-align:center;
+        }
+
+        .rotate-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .card-header[aria-expanded="true"] .rotate-icon {
+            transform: rotate(180deg);
+        }
+
+        .fixed-card {
+            height: 250px;
+        }
+
+        .select2-container--default .select2-search--dropdown {
+            display: block !important;
+        }
+    </style>
+</head>
+<main>
+    <div class="mt-4 mx-4"> 
+        @* Bio + Rating *@ 
+        <div class="row">
+            
+            <div class="position-relative bg-primary py-5 me-2">
+                    <!-- Band background -->
+                    <div class="container text-white">
+                        <h2>@Model.user.First_Name @Model.user.Last_Name</h2>
+                    </div>
+
+                    <!-- Image in front, rounded and right-aligned -->
+                    <div class="position-absolute top-100 end-0 translate-middle-y" style="z-index: 10; margin-left: 60rem;">
+                    <img src="@Url.Content($"~/assets/profileimages/{Model?.user.Photo ?? "default.png"}")"
+                         class="rounded-circle border border-3 border-white"
+                         style="width: 200px;"
+                         alt="Trainer Image">
+                    </div>
+            </div>
+            <div class="w-75 me-4 d-flex flex-column">
+                <h3 class="mt-4" style="padding-bottom:0.5rem; border-bottom:4px solid #0d6efd; width:fit-content">Biography</h3>
+                <p>@Model.coach.Bio</p>
+            </div>
+            <div class="row me-2">
+                <div style="display:flex;align-items:center;">
+                    <h3 class="mt-4" style="padding-bottom:0.5rem; border-bottom:4px solid #0d6efd; width:fit-content">Rating : </h3>
+                    <div class="row flex-column">
+                        <h5 class="me-2 mb-0" style="width:fit-content; padding-top:0.5rem">@Model.Rating out of 5 <i class="fa-solid fa-star" style="color:gold"></i></h5>
+                        <small class="me-2"> @Model.FeedbackCount toal feedbacks</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card mb-3" style="background:none; border:1px solid #0d6efd">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="border-bottom:none; cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#feedbackCollapse" aria-expanded="false" aria-controls="feedbackCollapse">
+                        <span style="text-align:center; width:95%">
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <i class="fa-solid fa-star fa-2x" style="color:gold"></i>
+                            }
+                            @if (hasHalfStar)
+                            {
+                                <i class="fa-solid fa-star-half-stroke fa-2x" style="color:gold">
+                                </i>
+                            }
+                            @for (int i = 0; i < emptyStars; i++)
+                            {
+                                <i class="fa-regular fa-star fa-2x" style="color:gold"></i>
+                            }
+                        </span>
+                        <span><i class="fa-solid fa-angle-down rotate-icon"></i></span>
+                    </div>
+                    
+                    <div class="collapse" id="feedbackCollapse">
+                        <div class="card-body ">
+                            <hr style="width: 75%; border: 2px solid #0d6efd; margin: 0 auto 2em auto;">
+                            <div class="row row-cols-3 row-cols-md-3 g-3">
+                                @foreach (var feedback in Model.Reviews.Take(3))
+                                {
+                                    string ratingLabel = feedback.Stars switch
+                                    {
+                                        <= 1.5 => "Disappointing",
+                                        <= 2.5 => "Could Be Better",
+                                        <= 3.5 => "Good",
+                                        <= 4.5 => "Very Impressive",
+                                        _ => "Exceptional"
+                                    };
+
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-body d-flex flex-column fixed-card">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <img src="@Url.Content($"~/assets/profileimages/{feedback.ClientProfilePicture ?? "default.png"}")" alt="Profile" class="rounded-circle me-3" style="width:50px;height:50px;object-fit:cover;">
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <h6 class="card-title mb-1">@feedback.ClientName</h6>
+                                                        </div>
+                                                        <div class="row">
+                                                            <small class="text-muted">Posted on: @feedback.Date</small>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="d-flex flex-column me-2">
+                                                        <div class="mb-1">
+                                                            @* Individual feedback stars *@
+                                                            @{
+                                                                var stars = feedback.Stars;
+                                                                var full = (int)stars;
+                                                                var half = stars - full >= 0.5 ? 1 : 0;
+                                                                var empty = 5 - full - half;
+                                                            }
+                                                            @for (int i = 0; i < full; i++)
+                                                            {
+                                                                <i class="bi bi-star-fill" style="color:gold"></i>
+                                                            }
+                                                            @if (half == 1)
+                                                            {
+                                                                <i class="bi bi-star-half" style="color:gold"></i>
+                                                            }
+                                                            @for (int i = 0; i < empty; i++)
+                                                            {
+                                                                <i class="bi bi-star" style="color:gold"></i>
+                                                            }
+                                                            <strong>@ratingLabel</strong>
+                                                        </div>
+                                                        <p class="card-text mb-0">@feedback.Comment</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        @* Personal Information *@
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <!--Begin.card-header-->
+                    <div class="card-header">
+                            <h3 class="card-title">Personal Information</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    
+                    <!--Begin.card-body-->
+                    <div class="card-body d-flex">
+                        
+                        @* Information *@
+                        <div class="col-8 px-2">
+                            <!-- First Name, Last_Name -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.First_Name">First Name</label>
+                                        <input asp-for="user.First_Name" value="@Model.user.First_Name" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.Last_Name">Last Name</label>
+                                        <input asp-for="user.Last_Name" value="@Model.user.Last_Name" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            <!-- Email, Address -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.Email"></label>
+                                        <input type="text" asp-for="user.Email" value="@Model.user.Email" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.Address"></label>
+                                        <input asp-for="user.Address" value="@Model.user.Address" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Phone Number, Gender-->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.Phone_Number">Phone Number</label>
+                                        <input type="text" asp-for="user.Phone_Number" value="@Model.user.Phone_Number" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.Gender"></label>
+                                        <input asp-for="user.Gender" type="text" class="form-control" value="@(Model.user.Gender == "m" ? "Male" : "Female")" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!--DOB, Specialty -->
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="user.DOB">Date Of Birth</label>
+                                        <input type="text" asp-for="user.DOB" value="@Model.user.DOB" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="coach.Specialty"></label>
+                                        <input type="text" asp-for="coach.Specialty" value="@Model.coach.Specialty" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Experience, Salary-->
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="coach.YearsExperience">Years Of Experience</label>
+                                        <input asp-for="coach.YearsExperience" value="@Model.coach.YearsExperience" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline">
+                                        <label asp-for="coach.Salary"></label>
+                                        <input type="number" asp-for="coach.Salary" value="@Model.coach.Salary" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                            </div>
+                        
+                        @* QR Code *@
+                        <div class="col-4 px-2">
+                            <div style="padding-left:1em">
+                                @Html.AntiForgeryToken()
+
+                                <div>
+                                    <p>QR Code</p>
+                                </div>
+
+                                <div id="qrDiv" class="mb-4" style="width:100%; height:auto; border:1px solid black">
+                                    <img id="qrImage" src="" alt="QR Code" style="width:100%; height:auto; display:none;" />
+
+                                    <input type="hidden" id="QrCode" name="user.QrCode" value="@Model?.user?.QrCode" />
+
+                                    <p id="qrPlaceholder" class="text-center">
+                                        No QR code generated yet.
+                                    </p>
+                                </div>
+                            </div>        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        
+        @* Availability + Availability Booking *@
+        <div class="row mb-4 custom">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <!--Begin.card-header-->
+                    <div class="card-header">
+                        <h3 class="card-title">Availability</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                        </div>
+                        <a asp-controller="Coach" asp-action="CreateAvailability" asp-route-CoachUserId="@Model.coach.UserID" class="btn btn-primary" style="margin-left:1rem;">Create</a>
+                    </div>
+
+                    <!--Begin.card-body-->
+                    <div class="card-body p-0">
+                        <div class="col">
+                            <div class="card-body p-md-5 text-black">
+                                <table class="table-responsive w-100">
+                                    <thead>
+                                        <tr style="border-bottom: 3px solid black">
+                                            <th style="display:none"></th>
+                                            <th style="width:12%">Day</th>
+                                            <th style="width:12%">Start Time</th>
+                                            <th style="width:12%">End Time</th>
+                                            <th style="width:12%">Status</th>
+                                            <th style="width:12%">Client</th>
+                                            <th colspan="2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.availability == null || !Model.availability.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">
+                                                    <p class="mt-4">@Model.user.First_Name is Currently Unavailable. </p>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var a in Model.availability)
+                                            {
+                                                <tr style="border-bottom:1px solid black">
+                                                    <td>@a.Day</td>
+                                                    <td>@a.StartTime</td>
+                                                    <td>@a.EndTime</td>
+
+                                                    @if (a.Status != "Confirmed")
+                                                    {
+                                                        <td>Free</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Confirmed</td>
+                                                    }
+                                                    
+                                                    <td>@a.ClientFullName</td>
+                                                    
+                                                    @if (a.Status == "Free")
+                                                    {
+                                                        <!-- Reserve Button -->
+                                                        <td>
+                                                            <button type="button"
+                                                                    class="btn btn-warning my-2 w-75"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#reserveModal"
+                                                                    data-availability-id="@a.Id"
+                                                                    onclick="openReserveModal(@a.Id)">
+                                                                Reserve Time Slot
+                                                            </button>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- Free Button -->
+                                                        <td>
+                                                            <form asp-action="FreeTimeSlot" asp-controller="Coach" method="post" style="display:inline">
+                                                                <input type="hidden" name="availabilityId" value="@a.Id" />
+                                                                <input type="hidden" name="CoachUserId" value="@Model.user.Id" />
+                                                                <input type="hidden" name="ClientID" value="@a.ClientID" />
+                                                                <button type="submit" class="btn btn-success my-2 w-75">
+                                                                    Free Time Slot
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    }
+
+                                                    <!-- Edit Button -->
+                                                    <td>
+                                                        <form asp-action="EditAvailability" asp-controller="Coach" asp-route-id="@a.Id"
+                                                              asp-route-coachUserId="@Model.coach.UserID" method="get" style="display:inline">
+                                                            
+                                                              <button type="submit" class="btn btn-primary my-2 w-75">
+                                                                Edit Availability
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="reserveModal" tabindex="-1" role="dialog" aria-labelledby="reserveModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <form method="post" asp-action="ReserveTimeSlot" asp-controller="Coach">
+                                            <div class="modal-content">
+                                                <div class="modal-header d-flex" style="justify-content: space-between">
+                                                    <h5 class="modal-title" id="reserveModalLabel">Reserve Time Slot</h5>
+                                                    <button type="button" class="btn-close ms-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="AvailabilityId" id="availabilityIdInput" />
+                                                    <input type="hidden" name="CoachUserID" id="CoachUserID" value="@Model.coach.UserID" />
+                                                    <div class="form-group">
+                                                        <label class="form-label">Select Client</label>
+                                                        <select id="clientDropdown" name="ClientId" required>
+                                                            <option value="">Choose a client...</option>
+                                                            @foreach (var client in ViewBag.Clients)
+                                                            {
+                                                                <option value="@client.Id">
+                                                                    @client.FullName
+                                                                </option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Reserve</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End.card-body -->
+                </div>
+            </div>
+        </div>
+        
+        @* Preamde Programs *@
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">Premade Training Programs</h5>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (Model.programs != null && Model.programs.Any())
+                        {
+                            <table class="w-100 table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th style="width:27%;">Title</th>
+                                        <th>Category</th>
+                                        <th style="padding-left:2%" colspan="2">Program Duration</th>
+                                        <th>Owner</th>
+                                        <th>Price</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.programs)
+                                    {
+                                        <tr>
+                                            <td style="display:none">@item.ID</td>
+                                            <td></td>
+                                            <td>@item.Title</td>
+                                            <td>@item.Category</td>
+                                            <td style="text-align:center">@item.Duration</td>
+                                            <td>Days</td>
+                                            <td>@item.Owner</td>
+                                            @if (item.Price == 0)
+                                            {
+                                                <td>Free</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@item.Price</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No premade programs found for this coach.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+@* Profile Picture Preview *@
+<script>
+    function previewImage(event) {
+        const fileInput = event.target;
+        const file = fileInput.files[0];
+        const preview = document.getElementById("imagePreview");
+
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+</script>
+
+@* Get QR *@
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const UserID = @Model.user.Id;
+
+        const response = await fetch(`/Member/GetQrByID?UserID=${UserID}`);
+        const result = await response.json();
+
+
+        if (!result.success){
+            document.getElementById("qrError").innerHTML(result.message);
+            return;
+        }
+
+
+        document.getElementById("qrImage").src = result.qrCodeBase64;
+        document.getElementById("qrImage").style.display = "block";
+        document.getElementById("qrPlaceholder").style.display = "none";
+        document.getElementById("QrCode").value = result.qrToken;
+    });
+</script>
+
+@* setting the value before the modal is shown *@
+<script>
+    function openReserveModal(availabilityId) {
+        document.getElementById("availabilityIdInput").value = availabilityId;
+        $('#reserveModal').modal('show');
+    }
+</script>
+
+@section Scripts {
+    @* Select2 script *@
+    <script>
+            $('#reserveModal').on('shown.bs.modal', function () {
+                $('#clientDropdown').select2({
+                    dropdownParent: $('#reserveModal'),
+                    placeholder: "Search and select a client",
+                    allowClear: true,
+                    width: '100%',
+                    minimumResultsForSearch: 1
+                });
+            });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}

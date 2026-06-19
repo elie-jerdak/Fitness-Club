@@ -1,0 +1,60 @@
+﻿@model FitnessClub_Test.Dtos.EditAvailabilityViewModel
+@{
+}
+<style>
+    form div {
+        margin-bottom: 1rem;
+    }
+</style>
+<main class="app-main">
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin: Row -->
+            <div class="row mt-4" style="justify-content:center">
+                <div class="col-md-6">
+                    <!--begin Member View-->
+                    <div class="card mb-4 w-75" style="justify-self: center">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Avaialbility</h5>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                                    <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                    <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form asp-controller="coach" asp-action="PutAvailability" method="post">
+                                <input asp-for="Availability.Id" type="hidden" />
+                                <input asp-for="CoachUserId" type="hidden" value="@Model.CoachUserId"/>
+
+                                <div class="form-group">
+                                    <label asp-for="@Model.Availability.Day"></label>
+                                    <input asp-for="@Model.Availability.Day" class="form-control" value="@Model.Availability.Day" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="@Model.Availability.StartTime">Start Time</label>
+                                    <input asp-for="@Model.Availability.StartTime" class="form-control" value="@Model.Availability.StartTime" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="@Model.Availability.EndTime">End Time</label>
+                                    <input asp-for="@Model.Availability.EndTime" class="form-control" value="@Model.Availability.EndTime" />
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-primary" style="width:25%">Save</button>
+                                    <a asp-controller="Coach" asp-action="DeleteAvailability" asp-route-availabilityId="@Model.Availability.Id" asp-route-coachUserId="@Model.CoachUserId" class="btn btn-danger" style="width:25%">Delete</a>
+                                    <a asp-controller="Coach" asp-action="Details" asp-route-userId="@Model.CoachUserId" class="btn btn-secondary" style="width:25%">Back</a>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

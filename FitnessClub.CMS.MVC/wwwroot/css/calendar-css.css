@@ -1,0 +1,73 @@
+.calendar {
+    overflow: hidden;
+    color: black;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+#month-year {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.weekdays, .days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.weekdays div, .days div {
+    width: 14.28%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.days div {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.days div:hover {
+    background-color: white;
+    color: orangered;
+}
+
+.days div.today {
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px;
+}
+
+.days .fade{
+    opacity: 0.5;
+    cursor: default;
+
+}
+
+.days .fade:hover {
+    color: black;
+}
+
+.days .event-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    min-width: 100%;
+    padding: 2px;
+}
+
+.event-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #7cb8f9;
+    border-radius: 50%;
+}

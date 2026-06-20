@@ -1,7 +1,7 @@
 ﻿@model FitnessClub_Test.Dtos.CreateAvailabilityViewModel
 @{
     var today = DateTime.Today;
-    var StartTime = DateTime.Now.ToString("HH:mm:ss");
+    var StartTime = DateTime.UtcNow.ToString("HH:mm:ss");
     var EndTime = StartTime + 1;
 }
 <style>

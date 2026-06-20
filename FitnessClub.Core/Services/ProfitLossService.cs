@@ -21,7 +21,7 @@ namespace FitnessClub_Test.Core.Services
 
         public RevenueChartDTO GetMonthlyRevenue(int monthsCount = 3)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var months = Enumerable.Range(0, monthsCount)
                 .Select(i => now.AddMonths(-i))
                 .OrderBy(m => m)
@@ -84,7 +84,7 @@ namespace FitnessClub_Test.Core.Services
 
         public RevenueChartDTO GetMonthlyExpenses(int monthsCount = 3)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var months = Enumerable.Range(0, monthsCount)
                 .Select(i => now.AddMonths(-i))
                 .OrderBy(m => m)

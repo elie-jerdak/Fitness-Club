@@ -216,11 +216,11 @@ namespace FitnessClub_Test.Core.Services
                     Email = coachCreateDTO.Email,
                     UserName = coachCreateDTO.Email,
                     Address = coachCreateDTO.Address,
-                    Dob = coachCreateDTO.DOB,
+                    Dob =  coachCreateDTO.DOB,
                     QrCode = coachCreateDTO.QrCode,
                     Photo = coachCreateDTO.Photo,
                     PhoneNumber = coachCreateDTO.Phone_Number,
-                    DateCreated = DateTime.Now,
+                    DateCreated = DateTime.UtcNow,
                     Gender = coachCreateDTO.Gender,
                     IsActive = true,
                     IsDeleted = false
@@ -256,7 +256,7 @@ namespace FitnessClub_Test.Core.Services
                 if (!string.IsNullOrEmpty(coachCreateDTO.Role))
                     await _userManager.AddToRoleAsync(user, coachCreateDTO.Role);
 
-                await _context.SaveChangesAsync(); // Get UserId
+                // await _context.SaveChangesAsync(); // Get UserId
 
                 int userId = user.Id;
 

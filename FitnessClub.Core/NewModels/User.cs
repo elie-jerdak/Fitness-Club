@@ -15,7 +15,7 @@ public partial class User : IdentityUser<int>
 
     public string LastName { get; set; }
 
-    public DateTime? Dob { get; set; }
+    public DateOnly Dob { get; set; }
 
     public string Gender { get; set; }
 

@@ -35,7 +35,7 @@ namespace FitnessClub_Test.Dtos
 
         [Required(ErrorMessage = "Date of birth is required")]
         [MiniumAge(18)]
-        public DateTime? DOB { get; set; }
+        public DateOnly DOB { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]

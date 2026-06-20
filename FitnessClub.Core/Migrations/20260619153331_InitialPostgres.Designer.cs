@@ -3,17 +3,17 @@ using System;
 using FitnessClub_Test.Core.NewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace FitnessClub_Test.Core.Migrations
 {
     [DbContext(typeof(FitnessClubDbContext))]
-    [Migration("20260108093948_InitialIdentityBridge")]
-    partial class InitialIdentityBridge
+    [Migration("20260619153331_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,60 +21,85 @@ namespace FitnessClub_Test.Core.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CalendarUser", b =>
+                {
+                    b.Property<int>("CalendarID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CalendarID", "UserID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("CalendarUser");
+                });
 
             modelBuilder.Entity("Feedback", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("CoachId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("date")
+                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("CoachId");
 
-                    b.ToTable("Feedback");
+                    b.ToTable("Feedback", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Availability", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Availability", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CoachId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Coach_ID");
 
-                    b.Property<string>("Day")
+                    b.Property<DateOnly>("Day")
                         .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("date");
 
-                    b.Property<TimeOnly?>("EndTime")
-                        .HasColumnType("time");
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
-                    b.Property<TimeOnly?>("StartTime")
-                        .HasColumnType("time");
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
 
                     b.HasKey("Id")
                         .HasName("Availability_PK");
@@ -84,36 +109,36 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Availability", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.AvailabilityBooking", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.AvailabilityBooking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AvailabilityId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Availability_ID");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Availability_Booking_PK");
@@ -126,33 +151,36 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Availability_Booking", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Booking", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Booking", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<int>("ClassId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Class_ID");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Booking_PK");
@@ -164,46 +192,107 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Booking", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Calendar", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<string>("BackgroundColor")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ClientID")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CoachID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DaysOfWeek")
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("Display")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EndRecur")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EventTitle")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ExDates")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsAllDay")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsBackground")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
-                    b.Property<TimeOnly?>("Time")
-                        .HasColumnType("time");
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("boolean");
 
-                    b.HasKey("Id")
+                    b.Property<string>("RecurrenceRule")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Visibility")
+                        .HasColumnType("text");
+
+                    b.HasKey("ID")
                         .HasName("Calendar_PK");
+
+                    b.HasIndex("ClientID");
+
+                    b.HasIndex("CoachID");
 
                     b.ToTable("Calendar", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.CheckingInOut", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("QrToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScanDevice")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScanIp")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("TimeIn")
                         .HasColumnType("datetime");
@@ -211,8 +300,11 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Property<DateTime?>("TimeOut")
                         .HasColumnType("datetime");
 
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("User_ID");
 
                     b.HasKey("Id")
@@ -223,62 +315,62 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("CheckingInOut", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Class", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Class", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CoachId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Coach_ID");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime");
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("MaxOccupancy")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Reccurence")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Class_PK");
@@ -288,27 +380,27 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Class", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Client", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("Height")
                         .HasColumnType("decimal(5, 2)");
 
                     b.Property<string>("MedicalHistory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Target")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("User_ID");
 
                     b.Property<decimal?>("Weight")
@@ -322,20 +414,20 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Client", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Coach", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Coach", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("Experience")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("Salary")
                         .HasColumnType("decimal(10, 2)");
@@ -343,10 +435,10 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Property<string>("Specialty")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("User_ID");
 
                     b.HasKey("Id")
@@ -357,17 +449,39 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Coach", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Membership", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Exercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exercises");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Membership", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.Property<DateOnly>("EndDate")
@@ -375,21 +489,21 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsAutorenewed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Membership_PK");
@@ -399,32 +513,32 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Membership", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Message", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AdminResponse")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Photo")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
@@ -433,14 +547,14 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("User_ID");
 
                     b.HasKey("Id")
@@ -451,24 +565,24 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Message", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Notification", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsGlobal")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
@@ -477,7 +591,7 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Notification_PK");
@@ -485,55 +599,67 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Notification", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.PremadeProgram", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.PremadeProgram", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Benefits")
+                        .HasColumnType("text");
 
                     b.Property<string>("Category")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<int>("CoachId")
-                        .HasColumnType("int")
+                    b.Property<int?>("CoachId")
+                        .HasColumnType("integer")
                         .HasColumnName("Coach_ID");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoverImage")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
+                    b.Property<int?>("Duration")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EquipmentNeeded")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Intensity")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Level")
+                        .HasColumnType("text");
+
+                    b.Property<int>("NumberOfExercises")
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("Price")
                         .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id")
                         .HasName("Premade_Program_PK");
@@ -543,26 +669,89 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Premade_Program", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.SubscriptionPayment", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.PremadeProgramExercise", b =>
+                {
+                    b.Property<int>("PremadeProgramId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NumberOfReps")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NumberOfSets")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PremadeProgramId", "ExerciseId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.ToTable("PremadeProgramExercises");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.QrToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Device")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QrTokens");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.SubscriptionPayment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.Property<string>("Currency")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
+                        .HasColumnType("character varying(10)")
                         .HasDefaultValue("USD");
 
                     b.Property<DateTime>("Date")
@@ -571,27 +760,30 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("FailureReason")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PaymentMethod")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("StripeSessionId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id")
                         .HasName("Subscription_Payment_PK");
@@ -601,132 +793,134 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Subscription_Payment", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.User", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("CalendarId")
-                        .HasColumnType("int")
-                        .HasColumnName("Calendar_ID");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<DateOnly?>("Dob")
-                        .HasColumnType("date")
+                    b.Property<DateTime?>("Dob")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("DOB");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(1)
                         .IsUnicode(false)
-                        .HasColumnType("char(1)")
+                        .HasColumnType("character(1)")
                         .IsFixedLength();
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<bool?>("IsDeleted")
+                    b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Photo")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("QrCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RefreshTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CalendarId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.WorkoutLog", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.WorkoutLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.Property<DateOnly>("Date")
@@ -738,17 +932,17 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<int?>("Duration")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id")
                         .HasName("Workout_Log_PK");
@@ -758,31 +952,31 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Workout_Log", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub.Dtos.TimeSlotHeatmapDto", b =>
+            modelBuilder.Entity("FitnessClub_Test.Dtos.TimeSlotHeatmapDto", b =>
                 {
                     b.Property<int>("Fri")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Mon")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Sat")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Sun")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Thu")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TimeSlot")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Tue")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Wed")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.ToTable("TimeSlotHeatmap");
                 });
@@ -791,28 +985,27 @@ namespace FitnessClub_Test.Core.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -821,18 +1014,18 @@ namespace FitnessClub_Test.Core.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -845,18 +1038,18 @@ namespace FitnessClub_Test.Core.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -868,16 +1061,16 @@ namespace FitnessClub_Test.Core.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -889,10 +1082,10 @@ namespace FitnessClub_Test.Core.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -904,16 +1097,16 @@ namespace FitnessClub_Test.Core.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -923,11 +1116,11 @@ namespace FitnessClub_Test.Core.Migrations
             modelBuilder.Entity("RegistersIn", b =>
                 {
                     b.Property<int>("PremadeProgramId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Premade_Program_ID");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Client_ID");
 
                     b.HasKey("PremadeProgramId", "ClientId")
@@ -941,11 +1134,11 @@ namespace FitnessClub_Test.Core.Migrations
             modelBuilder.Entity("ToBeNotified", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("User_ID");
 
                     b.Property<int>("NotificationId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Notification_ID");
 
                     b.HasKey("UserId", "NotificationId")
@@ -956,20 +1149,43 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("ToBeNotified", (string)null);
                 });
 
+            modelBuilder.Entity("CalendarUser", b =>
+                {
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Calendar", null)
+                        .WithMany()
+                        .HasForeignKey("CalendarID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Feedback", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Coach", "Coach")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
                         .WithMany("Feedbacks")
                         .HasForeignKey("CoachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Client");
+
                     b.Navigation("Coach");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Availability", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Availability", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Coach", "Coach")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
                         .WithMany("Availabilities")
                         .HasForeignKey("CoachId")
                         .IsRequired()
@@ -978,15 +1194,15 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Coach");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.AvailabilityBooking", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.AvailabilityBooking", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Availability", "Availability")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Availability", "Availability")
                         .WithMany("AvailabilityBookings")
                         .HasForeignKey("AvailabilityId")
                         .IsRequired()
                         .HasConstraintName("FK_AvailabilityBooking_Availability");
 
-                    b.HasOne("FitnessClub.Core.NewModels.Client", "Client")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
                         .WithMany("AvailabilityBookings")
                         .HasForeignKey("ClientId")
                         .IsRequired()
@@ -997,15 +1213,15 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Booking", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Booking", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Class", "Class")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Class", "Class")
                         .WithMany("Bookings")
                         .HasForeignKey("ClassId")
                         .IsRequired()
                         .HasConstraintName("Booking_Class_FK");
 
-                    b.HasOne("FitnessClub.Core.NewModels.Client", "Client")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
                         .WithMany("Bookings")
                         .HasForeignKey("ClientId")
                         .IsRequired()
@@ -1016,9 +1232,26 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.CheckingInOut", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", "User")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Client")
+                        .WithMany("ClientEvents")
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Coach")
+                        .WithMany("CoachEvents")
+                        .HasForeignKey("CoachID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>
+                {
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
                         .WithMany("CheckingInOuts")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -1027,9 +1260,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Class", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Class", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Coach", "Coach")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
                         .WithMany("Classes")
                         .HasForeignKey("CoachId")
                         .IsRequired()
@@ -1038,9 +1271,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Coach");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Client", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Client", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", "User")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
                         .WithMany("Clients")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -1049,9 +1282,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Coach", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Coach", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", "User")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
                         .WithMany("Coaches")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -1060,9 +1293,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Membership", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Membership", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Client", "Client")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
                         .WithMany("Memberships")
                         .HasForeignKey("ClientId")
                         .IsRequired()
@@ -1071,9 +1304,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Message", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Message", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", "User")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -1082,20 +1315,49 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.PremadeProgram", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.PremadeProgram", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Coach", "Coach")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
                         .WithMany("PremadePrograms")
                         .HasForeignKey("CoachId")
-                        .IsRequired()
                         .HasConstraintName("FK_PremadeProgram_Coach");
 
                     b.Navigation("Coach");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.SubscriptionPayment", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.PremadeProgramExercise", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Client", "Client")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Exercise", "Exercise")
+                        .WithMany("PremadeProgramExercises")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitnessClub_Test.Core.NewModels.PremadeProgram", "PremadeProgram")
+                        .WithMany("PremadeProgramExercises")
+                        .HasForeignKey("PremadeProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("PremadeProgram");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.QrToken", b =>
+                {
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.SubscriptionPayment", b =>
+                {
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
                         .WithMany("SubscriptionPayments")
                         .HasForeignKey("ClientId")
                         .IsRequired()
@@ -1104,19 +1366,9 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.User", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.WorkoutLog", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Calendar", "Calendar")
-                        .WithMany("Users")
-                        .HasForeignKey("CalendarId")
-                        .HasConstraintName("User_Calendar_FK");
-
-                    b.Navigation("Calendar");
-                });
-
-            modelBuilder.Entity("FitnessClub.Core.NewModels.WorkoutLog", b =>
-                {
-                    b.HasOne("FitnessClub.Core.NewModels.Client", "Client")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
                         .WithMany("WorkoutLogs")
                         .HasForeignKey("ClientId")
                         .IsRequired()
@@ -1136,7 +1388,7 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1145,7 +1397,7 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1160,7 +1412,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitnessClub.Core.NewModels.User", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1169,7 +1421,7 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.User", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1178,13 +1430,13 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("RegistersIn", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Client", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", null)
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .IsRequired()
                         .HasConstraintName("FK_RegistersIn_Client");
 
-                    b.HasOne("FitnessClub.Core.NewModels.PremadeProgram", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.PremadeProgram", null)
                         .WithMany()
                         .HasForeignKey("PremadeProgramId")
                         .IsRequired()
@@ -1193,39 +1445,36 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("ToBeNotified", b =>
                 {
-                    b.HasOne("FitnessClub.Core.NewModels.Notification", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Notification", null)
                         .WithMany()
                         .HasForeignKey("NotificationId")
                         .IsRequired()
                         .HasConstraintName("FK_ToBeNotified_Notification");
 
-                    b.HasOne("FitnessClub.Core.NewModels.User", null)
+                    b.HasOne("FitnessClub_Test.Core.NewModels.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("FK_ToBeNotified_User");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Availability", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Availability", b =>
                 {
                     b.Navigation("AvailabilityBookings");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Calendar", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Class", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Class", b =>
                 {
                     b.Navigation("Bookings");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Client", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Client", b =>
                 {
                     b.Navigation("AvailabilityBookings");
 
                     b.Navigation("Bookings");
+
+                    b.Navigation("Feedbacks");
 
                     b.Navigation("Memberships");
 
@@ -1234,7 +1483,7 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("WorkoutLogs");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.Coach", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Coach", b =>
                 {
                     b.Navigation("Availabilities");
 
@@ -1245,11 +1494,25 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("PremadePrograms");
                 });
 
-            modelBuilder.Entity("FitnessClub.Core.NewModels.User", b =>
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Exercise", b =>
+                {
+                    b.Navigation("PremadeProgramExercises");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.PremadeProgram", b =>
+                {
+                    b.Navigation("PremadeProgramExercises");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.User", b =>
                 {
                     b.Navigation("CheckingInOuts");
 
+                    b.Navigation("ClientEvents");
+
                     b.Navigation("Clients");
+
+                    b.Navigation("CoachEvents");
 
                     b.Navigation("Coaches");
 

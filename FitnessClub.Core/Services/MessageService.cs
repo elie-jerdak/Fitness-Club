@@ -27,7 +27,7 @@ namespace FitnessClub_Test.Core.Services
                 Content = dto.Content,
                 Type = dto.Type,
                 Status = "Open",
-                Time = DateTime.Now,
+                Time = DateTime.UtcNow,
                 IsDeleted = false,
                 UserId = dto.UserId
             };

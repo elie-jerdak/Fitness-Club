@@ -30,7 +30,7 @@ public class BookingService : IBookingService
                 BookingID = b.Id,
                 ClassName = b.Class.Name,
                 ClientName = b.Client.User.FirstName + " " + b.Client.User.LastName,
-                CreatedAt = b.Date ?? DateTime.Now,
+                CreatedAt = b.Date ?? DateTime.UtcNow,
                 Type = b.Type,
                 Status = b.Status
             })
@@ -85,7 +85,7 @@ public class BookingService : IBookingService
             {
                 ClassId = dto.ClassId,
                 ClientId = dto.ClientId,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 Status = "Confirmed",
                 Type = dto.Type
             };
@@ -115,7 +115,7 @@ public class BookingService : IBookingService
                 ClientID = b.ClientId,
                 ClassName = b.Class.Name,
                 ClientName = b.Client.User.FirstName + " " + b.Client.User.LastName,
-                CreatedAt = b.Date ?? DateTime.Now,
+                CreatedAt = b.Date ?? DateTime.UtcNow,
                 Type = b.Type,
                 Status = b.Status
             })

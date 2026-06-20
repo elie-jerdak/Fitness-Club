@@ -18,19 +18,19 @@ namespace FitnessClub_Test.Dtos.Validations
             if (value == null)
                 return ValidationResult.Success;
 
-            if (value is not DateTime dob)
+            if (value is not DateOnly dob)
                 return new ValidationResult("Invalid date format");
 
             // Use UTC now for comparison
-            var today = DateTime.UtcNow.Date; // ignore time part
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            if (dob.Date > today)
+            if (dob > today)
                 return new ValidationResult("Date of birth cannot be in the future");
 
             var age = today.Year - dob.Year;
 
             // If birthday hasn't occurred yet this year, subtract 1
-            if (dob.Date > today.AddYears(-age))
+            if (dob > today.AddYears(-age))
                 age--;
 
             if (age < _minimumAge)

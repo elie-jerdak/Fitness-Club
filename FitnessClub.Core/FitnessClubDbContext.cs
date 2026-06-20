@@ -59,7 +59,7 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-8O8T7R7\\SQLEXPRESS;Database=FitnessClubDB_TEST;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FitnessClub;Username=postgres;Password=Tl@Sf1008dD1");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

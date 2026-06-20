@@ -16,7 +16,7 @@ namespace FitnessClub_Test.Core.Services
         }
         public List<ClassUtilizationDTO> ClassUtilization()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             int currentMonth = now.Month;
             int currentYear = now.Year;
 

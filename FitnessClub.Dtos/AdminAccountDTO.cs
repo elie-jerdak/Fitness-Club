@@ -22,7 +22,7 @@ namespace FitnessClub_Test.Dtos
 
         [Required(ErrorMessage = "Date of birth is required")]
         [MiniumAge(18)]
-        public DateTime? DOB { get; set; }
+        public DateOnly DOB { get; set; }
 
         [Required(ErrorMessage = "Enter a valid gender")]
         public string Gender { get; set; }

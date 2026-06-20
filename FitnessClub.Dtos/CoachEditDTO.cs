@@ -15,7 +15,7 @@ namespace FitnessClub_Test.Dtos
         public string Phone_Number { get; set; }
         public string Role { get; set; }
         public string Address { get; set; }
-        public DateTime? DOB { get; set; }
+        public DateOnly DOB { get; set; }
         public string Gender { get; set; }
         public string Photo { get; set; }
         public  string QrCode { get; set; }

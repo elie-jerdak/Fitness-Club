@@ -32,7 +32,7 @@ namespace FitnessClub_Test.Dtos
         
         [Required(ErrorMessage = "Date of birth is required")]
         [MiniumAge(18)]
-        public DateTime? DOB { get; set; }
+        public DateOnly DOB { get; set; }
         
         [Required]
         public string Gender { get; set; }
@@ -46,7 +46,7 @@ namespace FitnessClub_Test.Dtos
         public string Phone_Number { get; set; }
         [Required(ErrorMessage = "Address is required")]
         public string Address { get; set; }
-        public DateTime CreatedDateTime { get; set; } = DateTime.Now;
+        public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
         public string Photo { get; set; }
         [Required]
         public string QrCode { get; set; }

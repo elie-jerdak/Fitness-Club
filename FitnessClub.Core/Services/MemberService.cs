@@ -226,7 +226,7 @@ namespace FitnessClub_Test.Core.Services
                     QrCode = dto.user.QrCode,
                     Photo = dto.user.Photo,
                     PhoneNumber = dto.user.Phone_Number,
-                    DateCreated = DateTime.Now,
+                    DateCreated = DateTime.UtcNow,
                     Gender = dto.user.Gender,
                     UserName = dto.user.Email,
                     IsActive = true,
@@ -263,7 +263,7 @@ namespace FitnessClub_Test.Core.Services
                 if (!string.IsNullOrEmpty(dto.user.Role))
                     await _userManager.AddToRoleAsync(user, dto.user.Role);
 
-                await _context.SaveChangesAsync(); // Get UserId
+                //await _context.SaveChangesAsync(); // Get UserId
 
                 int userId = user.Id;
 

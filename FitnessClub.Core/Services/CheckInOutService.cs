@@ -31,7 +31,7 @@ public class CheckInOutService : ICheckInOutService
             var checkIn = new CheckingInOut
             {
                 UserId = userId,
-                TimeIn = DateTime.Now
+                TimeIn = DateTime.UtcNow
             };
 
             _dbContext.CheckingInOuts.Add(checkIn);
@@ -48,7 +48,7 @@ public class CheckInOutService : ICheckInOutService
         else
         {
             // Open session exists → check out
-            latest.TimeOut = DateTime.Now;
+            latest.TimeOut = DateTime.UtcNow;
 
             await _dbContext.SaveChangesAsync();
 

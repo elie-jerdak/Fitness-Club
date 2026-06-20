@@ -444,7 +444,7 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
         [HttpGet]
         public IActionResult CreateAvailability(int CoachUserId)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var vm = new CreateAvailabilityViewModel
             {

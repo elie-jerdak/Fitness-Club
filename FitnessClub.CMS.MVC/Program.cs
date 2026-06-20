@@ -19,7 +19,7 @@ var config = builder.Configuration;
 QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddDbContext<FitnessClubDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

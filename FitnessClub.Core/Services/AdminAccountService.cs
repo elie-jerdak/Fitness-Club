@@ -61,11 +61,8 @@ namespace FitnessClub_Test.Core.Services
                 user.Photo = dto.Photo;
             }
 
-            user.Address = dto.Address;
-            if (dto.DOB.HasValue)
-            {
-                user.Dob = dto.DOB.Value;
-            }
+            user.Address = dto.Address; 
+            user.Dob = dto.DOB; 
             user.PhoneNumber = dto.Phone_Number;
             user.Gender = string.IsNullOrEmpty(dto.Gender) ? null : dto.Gender.Substring(0, 1);
             user.QrCode = dto.QrCode;

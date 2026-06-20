@@ -21,7 +21,7 @@ namespace FitnessClub.Website.MVC.Models
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Dob { get; set; }
+        public DateOnly Dob { get; set; }
 
         [Required]
         public string Gender { get; set; }

@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>FitnessClub_Test.CMS.MVC</RootNamespace>
     <AssemblyName>FitnessClub_Test.CMS.MVC</AssemblyName>
+    <UserSecretsId>72dae32f-7b24-4bf8-97e5-e68bf507d2fd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

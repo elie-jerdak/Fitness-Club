@@ -23,7 +23,7 @@ RUN dotnet restore FitnessClub.CMS.MVC/FitnessClub.CMS.MVC.csproj
 COPY . .
 
 # Publish
-RUN dotnet publish FitnessClub.Api/FitnessClub.Api.csproj -c Release -o /app/publish
+RUN dotnet publish FitnessClub.CMS.MVC/FitnessClub.CMS.MVC.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

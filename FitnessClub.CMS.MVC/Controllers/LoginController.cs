@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System;
 
 namespace FitnessClub_Test.CMS.MVC.Controllers
 {
@@ -45,6 +46,9 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
 
             var client = new HttpClient();
             var response = await client.PostAsJsonAsync($"{_apiBaseUrl}user-auth/Login", user);
+
+            Console.WriteLine(_apiBaseUrl);
+            Console.WriteLine(response.Content);
 
             if (!response.IsSuccessStatusCode)
             {

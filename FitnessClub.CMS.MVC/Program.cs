@@ -34,11 +34,14 @@ builder.Services.AddScoped<IPremadeProgramsService, PremadeProgramsService>();
 builder.Services.AddScoped<IFastApiService, FastApiService>();
 builder.Services.AddScoped<IProfitLossService, ProfitLossService>();
 
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Session expires after 30 minutes of inactivity
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddHttpClient<ApiAuthClient>(c =>
@@ -99,8 +102,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
+
 app.UseSession();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

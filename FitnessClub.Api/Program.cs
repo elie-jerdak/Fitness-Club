@@ -147,7 +147,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "https://localhost:7222",
-            "https://localhost:7325"
+            "https://localhost:7325",
+            "https://fitnessclub-cms.onrender.com/"
         )
         .AllowAnyHeader()
         .AllowAnyMethod();

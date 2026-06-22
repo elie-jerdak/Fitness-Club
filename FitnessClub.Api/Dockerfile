@@ -10,7 +10,7 @@ WORKDIR /src
 # Copy solution + projects
 COPY FitnessClub_Test.sln ./
 
-COPY FitnessClub.Api/FitnessClub.Aip.csproj FitnessClub.Api/
+COPY FitnessClub.Api/FitnessClub.Api.csproj FitnessClub.Api/
 COPY FitnessClub.CMS.MVC/FitnessClub.CMS.MVC.csproj FitnessClub.CMS.MVC/
 COPY FitnessClub.Core/FitnessClub.Core.csproj FitnessClub.Core/
 COPY FitnessClub.Common/FitnessClub.Common.csproj FitnessClub.Common/
@@ -31,4 +31,4 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "FitnessClub.Api.dll"]
+ENTRYPOINT ["dotnet", "FitnessClub_Test.Api.dll"]

@@ -26,27 +26,27 @@ var config = builder.Configuration;
 builder.Services.AddDbContext<FitnessClubDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+//var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (!string.IsNullOrEmpty(databaseUrl))
-{
-    var connectionString = ConvertUrlToConnectionString(databaseUrl);
-    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
-}
+//if (!string.IsNullOrEmpty(databaseUrl))
+//{
+//    var connectionString = ConvertUrlToConnectionString(databaseUrl);
+//    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+//}
 
-string ConvertUrlToConnectionString(string url)
-{
-    var uri = new Uri(url);
-    var userInfo = uri.UserInfo.Split(':');
+//string ConvertUrlToConnectionString(string url)
+//{
+//    var uri = new Uri(url);
+//    var userInfo = uri.UserInfo.Split(':');
 
-    return $"Host={uri.Host};" +
-           $"Port={uri.Port};" +
-           $"Database={uri.LocalPath.TrimStart('/')};" +
-           $"Username={userInfo[0]};" +
-           $"Password={userInfo[1]};" +
-           $"SSL Mode=Require;" +
-           $"Trust Server Certificate=true";
-}
+//    return $"Host={uri.Host};" +
+//           $"Port={uri.Port};" +
+//           $"Database={uri.LocalPath.TrimStart('/')};" +
+//           $"Username={userInfo[0]};" +
+//           $"Password={userInfo[1]};" +
+//           $"SSL Mode=Require;" +
+//           $"Trust Server Certificate=true";
+//}
 
 builder.Services
     .AddIdentity<User, IdentityRole<int>>(options =>

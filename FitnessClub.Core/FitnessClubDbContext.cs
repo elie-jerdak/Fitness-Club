@@ -58,8 +58,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
     public DbSet<PremadeProgramExercise> PremadeProgramExercises { get; set; }
 
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FitnessClub;Username=postgres;Password=Tl@Sf1008dD1");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FitnessClub;Username=postgres;Password=Tl@Sf1008dD1");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

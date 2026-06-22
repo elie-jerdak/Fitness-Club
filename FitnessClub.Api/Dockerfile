@@ -10,25 +10,25 @@ WORKDIR /src
 # Copy solution + projects
 COPY FitnessClub_Test.sln ./
 
-COPY FitnessClub.API/FitnessClub.API.csproj FitnessClub.API/
-COPY FitnessClub.CMS/FitnessClub.CMS.csproj FitnessClub.CMS/
+COPY FitnessClub.Api/FitnessClub.Aip.csproj FitnessClub.Api/
+COPY FitnessClub.CMS.MVC/FitnessClub.CMS.MVC.csproj FitnessClub.CMS.MVC/
 COPY FitnessClub.Core/FitnessClub.Core.csproj FitnessClub.Core/
 COPY FitnessClub.Common/FitnessClub.Common.csproj FitnessClub.Common/
-COPY FitnessClub.DTOs/FitnessClub.DTOs.csproj FitnessClub.DTOs/
+COPY FitnessClub.Dtos/FitnessClub.Dtos.csproj FitnessClub.Dtos/
 COPY FitnessClub.AIAssistant/FitnessClub.AIAssistant.csproj FitnessClub.AIAssistant/
 
 # Restore
-RUN dotnet restore FitnessClub.API/FitnessClub.API.csproj
+RUN dotnet restore FitnessClub.Api/FitnessClub.Api.csproj
 
 # Copy everything
 COPY . .
 
 # Publish
-RUN dotnet publish FitnessClub.API/FitnessClub.API.csproj -c Release -o /app/publish
+RUN dotnet publish FitnessClub.Api/FitnessClub.Api.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "FitnessClub.API.dll"]
+ENTRYPOINT ["dotnet", "FitnessClub.Api.dll"]

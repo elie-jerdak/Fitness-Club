@@ -15,7 +15,6 @@ COPY FitnessClub.CMS.MVC/FitnessClub.CMS.MVC.csproj FitnessClub.CMS.MVC/
 COPY FitnessClub.Core/FitnessClub.Core.csproj FitnessClub.Core/
 COPY FitnessClub.Common/FitnessClub.Common.csproj FitnessClub.Common/
 COPY FitnessClub.Dtos/FitnessClub.Dtos.csproj FitnessClub.Dtos/
-COPY FitnessClub.AIAssistant/FitnessClub.AIAssistant.csproj FitnessClub.AIAssistant/
 
 # Restore
 RUN dotnet restore FitnessClub.Api/FitnessClub.Api.csproj

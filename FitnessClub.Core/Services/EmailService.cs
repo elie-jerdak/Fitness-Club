@@ -20,10 +20,10 @@ namespace FitnessClub_Test.Core.Services
         // below are two overloaded methods
         public async Task SendEmail(string recipient, string subject, string fullName, int daysRemaining)
         {
-            var email = _config.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-            var password = _config.GetValue<string>("EMAIL_CONFIGURATION:PWD");
-            var host = _config.GetValue<string>("EMAIL_CONFIGURATION:HOST");
-            var port = _config.GetValue<int>("EMAIL_CONFIGURATION:PORT");
+            var email = _config.GetValue<string>("EmailConfiguration:email");
+            var password = _config.GetValue<string>("EmailConfiguration:pwd");
+            var host = _config.GetValue<string>("EmailConfiguration:host");
+            var port = _config.GetValue<int>("EmailConfiguration:port");
 
             var smtpClient = new SmtpClient(host, port);
             smtpClient.EnableSsl = true;
@@ -69,10 +69,10 @@ namespace FitnessClub_Test.Core.Services
 
         public async Task SendEmail(string recipient, string subject, string header, string firstName, string messageBody)
         {
-            var email = _config.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-            var password = _config.GetValue<string>("EMAIL_CONFIGURATION:PWD");
-            var host = _config.GetValue<string>("EMAIL_CONFIGURATION:HOST");
-            var port = _config.GetValue<int>("EMAIL_CONFIGURATION:PORT");
+            var email = _config.GetValue<string>("EmailConfiguration:email");
+            var password = _config.GetValue<string>("EmailConfiguration:pwd");
+            var host = _config.GetValue<string>("EmailConfiguration:host");
+            var port = _config.GetValue<int>("EmailConfiguration:port");
 
             var smtpClient = new SmtpClient(host, port);
             smtpClient.EnableSsl = true;
@@ -102,10 +102,10 @@ namespace FitnessClub_Test.Core.Services
         //used for online payment
         public async Task SendOnlineInvoiceEmail(string recipient, string subject, InvoiceDetails invoice)
         {
-            var senderEmail = _config.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
-            var password = _config.GetValue<string>("EMAIL_CONFIGURATION:PWD");
-            var host = _config.GetValue<string>("EMAIL_CONFIGURATION:HOST");
-            var port = _config.GetValue<int>("EMAIL_CONFIGURATION:PORT");
+            var senderEmail = _config.GetValue<string>("EmailConfiguration:email");
+            var password = _config.GetValue<string>("EmailConfiguration:pwd");
+            var host = _config.GetValue<string>("EmailConfiguration:host");
+            var port = _config.GetValue<int>("EmailConfiguration:port");
 
             using var smtpClient = new SmtpClient(host, port)
             {

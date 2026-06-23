@@ -23,23 +23,59 @@ namespace FitnessClub_Test.CMS.MVC.Services
 
         private async Task EnsureTokenAsync()
         {
-            var session = _http.HttpContext.Session;
+            var session = _http.HttpContext?.Session;
+
+            if (session == null)
+                return;
+
             var token = session.GetString("access");
             var refresh = session.GetString("refresh");
 
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(refresh))
+            if (string.IsNullOrWhiteSpace(token) ||
+                string.IsNullOrWhiteSpace(refresh))
                 return;
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            JwtSecurityToken jwt;
 
+            try
+            {
+                jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            }
+            catch
+            {
+                session.Clear();
+                return;
+            }
+
+            // Token still valid
             if (jwt.ValidTo > DateTime.UtcNow.AddMinutes(2))
                 return;
 
-            var response = await _client.PostAsJsonAsync("user-auth/refresh",
+            Console.WriteLine($"Inside ApiAuthClient calling refresh {_client.BaseAddress}");
+
+            var response = await _client.PostAsJsonAsync(
+                "user-auth/refresh",
                 new { refreshToken = refresh });
 
+            // Refresh failed
+            if (!response.IsSuccessStatusCode)
+            {
+                session.Clear();
+                return;
+            }
+
             var json = await response.Content.ReadAsStringAsync();
+
             var data = JsonConvert.DeserializeObject<AuthResponseDTO>(json);
+
+            // Invalid response
+            if (data == null ||
+                string.IsNullOrWhiteSpace(data.Token) ||
+                string.IsNullOrWhiteSpace(data.RefreshToken))
+            {
+                session.Clear();
+                return;
+            }
 
             session.SetString("access", data.Token);
             session.SetString("refresh", data.RefreshToken);
@@ -49,9 +85,13 @@ namespace FitnessClub_Test.CMS.MVC.Services
         {
             await EnsureTokenAsync();
 
-            var token = _http.HttpContext.Session.GetString("access");
-            _client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+            var token = _http.HttpContext?.Session.GetString("access");
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
 
             return _client;
         }

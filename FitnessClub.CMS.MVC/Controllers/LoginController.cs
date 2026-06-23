@@ -45,7 +45,7 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
             }
 
             var client = new HttpClient();
-            var response = await client.PostAsJsonAsync($"{_apiBaseUrl}api/user-auth/login", user);
+            var response = await client.PostAsJsonAsync($"{_apiBaseUrl}user-auth/login", user);
 
             Console.WriteLine($"Calling Api {_apiBaseUrl}user-auth/login" );
             Console.WriteLine(response.StatusCode);

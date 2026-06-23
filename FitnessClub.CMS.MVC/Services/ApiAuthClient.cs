@@ -54,7 +54,7 @@ namespace FitnessClub_Test.CMS.MVC.Services
             Console.WriteLine($"Inside ApiAuthClient calling refresh {_client.BaseAddress}");
 
             var response = await _client.PostAsJsonAsync(
-                "/api/user-auth/refresh",
+                "/user-auth/refresh",
                 new { refreshToken = refresh });
 
             // Refresh failed

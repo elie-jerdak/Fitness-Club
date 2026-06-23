@@ -144,6 +144,7 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
                 MembershipID = membershipId
             };
 
+            Console.WriteLine($"Api Call: {client.BaseAddress}payments/create-session");
 
             // Call API to create Stripe session
             var response = await client.PostAsJsonAsync("payments/create-session", dto);

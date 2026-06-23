@@ -49,6 +49,7 @@ namespace FitnessClub_Test.Api.Controllers
                 return BadRequest("Membership not found");
 
             var amount = GetAmount(membership.Type);
+            var baseUrl = _config["CmsBaseUrl"];
 
             var options = new SessionCreateOptions
             {
@@ -70,8 +71,8 @@ namespace FitnessClub_Test.Api.Controllers
                     Quantity = 1
                 }
             },
-                SuccessUrl = "https://localhost:7222/UpcomingExpiration/Success?session_id={CHECKOUT_SESSION_ID}",
-                CancelUrl = "https://localhost:7222/UpcomingExpiration/cancel",
+                SuccessUrl = $"{baseUrl}UpcomingExpiration/Success?session_id={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = $"{baseUrl}UpcomingExpiration/Cancel",
                 Metadata = new Dictionary<string, string>
             {
                 { "membershipID", dto.MembershipID.ToString() }

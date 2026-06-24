@@ -49,7 +49,7 @@ namespace FitnessClub_Test.Api.Controllers
                 return BadRequest("Membership not found");
 
             var amount = GetAmount(membership.Type);
-            var baseUrl = _config["CmsBaseUrl"];
+            var baseUrl = _config["Urls:CmsBaseUrl"];
 
             var options = new SessionCreateOptions
             {

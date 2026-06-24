@@ -66,6 +66,8 @@ namespace FitnessClub_Test.Core.Services
                     IsDeleted = false
                 };
 
+                Console.WriteLine("//////////////Service: " + payment.ToString());
+
                 _context.SubscriptionPayments.Add(payment);
                 await _context.SaveChangesAsync();
 

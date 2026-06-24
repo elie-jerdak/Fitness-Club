@@ -17,7 +17,7 @@ namespace FitnessClub_Test.Core.Services
             _config = configuration;
         }
 
-        // below are two overloaded methods
+        // below are two overloaded methods 
         public async Task SendEmail(string recipient, string subject, string fullName, int daysRemaining)
         {
             var email = _config.GetValue<string>("EmailConfiguration:email");
@@ -25,11 +25,16 @@ namespace FitnessClub_Test.Core.Services
             var host = _config.GetValue<string>("EmailConfiguration:host");
             var port = _config.GetValue<int>("EmailConfiguration:port");
 
-            var smtpClient = new SmtpClient(host, port);
-            smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = false;
+            Console.WriteLine($" email {recipient}  password '{password}' host: {host} port: {port} ");
 
-            smtpClient.Credentials = new NetworkCredential(email, password);
+
+            var smtpClient = new SmtpClient(host, port)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+
+                Credentials = new NetworkCredential(email, password)
+            };
 
             // Load HTML template
             var basePath = _config["Paths:TemplateFolderPath"];
@@ -74,10 +79,12 @@ namespace FitnessClub_Test.Core.Services
             var host = _config.GetValue<string>("EmailConfiguration:host");
             var port = _config.GetValue<int>("EmailConfiguration:port");
 
-            var smtpClient = new SmtpClient(host, port);
-            smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(email, password);
+            var smtpClient = new SmtpClient(host, port)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(email, password)
+            };
 
             // Load HTML template
             var basePath = _config["Paths:TemplateFolderPath"];

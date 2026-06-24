@@ -79,13 +79,22 @@ namespace FitnessClub_Test.Api.Controllers
             }
             };
 
-            var service = new SessionService();
-            var session = await service.CreateAsync(options);
-
-            return Ok(new
+            try
             {
-                url = session.Url
-            });
+                var service = new SessionService();
+                var session = await service.CreateAsync(options);
+
+                return Ok(new
+                {
+                    url = session.Url
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("webhook")]

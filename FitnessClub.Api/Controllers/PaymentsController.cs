@@ -109,12 +109,16 @@ namespace FitnessClub_Test.Api.Controllers
         {
             try
             {
+                Console.WriteLine("/////////////////Inside WebHook");
+
                 var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
                 var stripeEvent = EventUtility.ConstructEvent(
                     json,
                     Request.Headers["Stripe-Signature"],
                     _stripeOptions.WebhookSecret
                 );
+
+                Console.WriteLine($"//////StripeEvent.Type: {stripeEvent.Type} ");
 
                 if (stripeEvent.Type == "checkout.session.completed")
                 {

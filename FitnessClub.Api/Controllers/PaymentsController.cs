@@ -73,6 +73,7 @@ namespace FitnessClub_Test.Api.Controllers
             },
                 SuccessUrl = $"{baseUrl}UpcomingExpiration/Success?session_id={{CHECKOUT_SESSION_ID}}",
                 CancelUrl = $"{baseUrl}UpcomingExpiration/Cancel",
+
                 Metadata = new Dictionary<string, string>
             {
                 { "membershipID", dto.MembershipID.ToString() }
@@ -81,6 +82,12 @@ namespace FitnessClub_Test.Api.Controllers
 
             try
             {
+                var SuccessUrl = $"{baseUrl}UpcomingExpiration/Success?session_id={{CHECKOUT_SESSION_ID}}";
+                var CancelUrl = $"{baseUrl}UpcomingExpiration/Cancel";
+
+                Console.WriteLine($"//////////////SuccessUel: {SuccessUrl}");
+                Console.WriteLine($"/////////////////CancelUrl: {CancelUrl}");
+
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
 

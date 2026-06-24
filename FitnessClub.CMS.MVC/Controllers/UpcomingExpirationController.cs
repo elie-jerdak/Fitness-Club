@@ -143,8 +143,19 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
             {
                 MembershipID = membershipId
             };
+            
+            var baseUrl = client.BaseAddress;
 
-            Console.WriteLine($"Api Call: {client.BaseAddress}payments/create-session");
+            Console.WriteLine($"CmsBaseUrl = '{baseUrl}'");
+
+            var successUrl =
+                $"{baseUrl}/UpcomingExpiration/Success?session_id={{CHECKOUT_SESSION_ID}}";
+
+            var cancelUrl =
+                $"{baseUrl}/UpcomingExpiration/Cancel";
+
+            Console.WriteLine($"SuccessUrl = '{successUrl}'");
+            Console.WriteLine($"CancelUrl = '{cancelUrl}'");
 
             // Call API to create Stripe session
             var response = await client.PostAsJsonAsync("payments/create-session", dto);

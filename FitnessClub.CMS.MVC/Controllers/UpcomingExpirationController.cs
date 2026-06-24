@@ -183,6 +183,9 @@ namespace FitnessClub_Test.CMS.MVC.Controllers
             var payment = await _context.SubscriptionPayments
                 .FirstOrDefaultAsync(p => p.StripeSessionId == session_id);
 
+            Console.WriteLine($"Stripe callback received. SessionId: {session_id}");
+            
+
             if (payment != null)
             {
                 TempData["Success"] = "Payment completed successfully!";

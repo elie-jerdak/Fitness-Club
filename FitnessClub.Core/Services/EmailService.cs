@@ -37,8 +37,15 @@ namespace FitnessClub_Test.Core.Services
             };
 
             // Load HTML template
-            var basePath = _config["Paths:TemplateFolderPath"];
-            var templatePath = Path.Combine(basePath, "SubscriptionReminderTemplate.html");
+            //var basePath = _config["Paths:TemplateFolderPath"];
+            //var templatePath = Path.Combine(basePath, "SubscriptionReminderTemplate.html");
+
+            //var htmlTemplate = await File.ReadAllTextAsync(templatePath);
+            var templatePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Templates",
+                "SubscriptionReminderTemplate.html"
+            );
 
             var htmlTemplate = await File.ReadAllTextAsync(templatePath);
 

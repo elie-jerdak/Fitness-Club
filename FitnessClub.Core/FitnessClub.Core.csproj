@@ -38,11 +38,7 @@
     <ProjectReference Include="..\FitnessClub.Dtos\FitnessClub.Dtos.csproj" />
   </ItemGroup>
 	
-  <ItemGroup>
-    <Content Include="Templates\SubscriptionReminderTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+
   
 	
 	

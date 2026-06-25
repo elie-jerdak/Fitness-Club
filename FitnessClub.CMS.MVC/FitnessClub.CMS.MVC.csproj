@@ -39,5 +39,10 @@
     <Folder Include="wwwroot\assets\profileimages\" />
     <Folder Include="wwwroot\MT2\" />
   </ItemGroup>
+  <ItemGroup>
+  	<Content Include="Templates\SubscriptionReminderTemplate.html">
+  		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  	</Content>
+  </ItemGroup>
 
 </Project>

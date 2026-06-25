@@ -48,6 +48,9 @@ namespace FitnessClub_Test.Core.Services
             );
 
             var htmlTemplate = await File.ReadAllTextAsync(templatePath);
+            
+            Console.WriteLine("/////////////////" + templatePath);
+            Console.WriteLine(File.Exists(templatePath));
 
             // Build the messageBody based on daysRemaining
             string messageBody;

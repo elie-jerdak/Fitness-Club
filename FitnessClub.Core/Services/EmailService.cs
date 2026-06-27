@@ -105,7 +105,7 @@ namespace FitnessClub_Test.Core.Services
                 "Authorization",
                 $"Bearer {apiKey}"
             );
-            recipient = "test@siliitalee.resend.app";
+            recipient = "jardakelie@gmail.com";
             var body = new
             {
                 from = "onboarding@resend.dev",

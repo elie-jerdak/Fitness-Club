@@ -289,11 +289,15 @@ namespace FitnessClub_Test.Core.Services
 
         public async Task SendOnlineInvoiceEmail(string recipient, string subject, InvoiceDetails invoice)
         {
-            var basePath = _config["Paths:TemplateFolderPath"];
-            var templatePath = Path.Combine(basePath, "OnlineReceipt.html");
-            var htmlTemplate = await File.ReadAllTextAsync(templatePath);
+            var templatePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Templates",
+                "OnlineReceipt.html"
+            );
 
-            var htmlBody = htmlTemplate
+            var html = await File.ReadAllTextAsync(templatePath);
+
+            html = html
                 .Replace("{{invoiceNumber}}", invoice.InvoiceNumber)
                 .Replace("{{customerName}}", invoice.CustomerName)
                 .Replace("{{customerEmail}}", invoice.CustomerEmail)
@@ -318,7 +322,7 @@ namespace FitnessClub_Test.Core.Services
                 from = "onboarding@resend.dev",
                 to = recipient,
                 subject = subject,
-                html = htmlBody
+                html = html
             };
 
             var json = JsonConvert.SerializeObject(body);

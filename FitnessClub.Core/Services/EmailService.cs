@@ -94,8 +94,24 @@ namespace FitnessClub_Test.Core.Services
 
             var html = await File.ReadAllTextAsync(templatePath);
 
+            string messageBody;
+            if (daysRemaining == 0)
+                messageBody = "Your subscription expires today.";
+            else if (daysRemaining < 0)
+            {
+                if (daysRemaining == -1) messageBody = $"Your subscription expired {-daysRemaining} day ago.";
+                else messageBody = $"Your subscription expired {-daysRemaining} days ago.";
+            }
+
+            else
+            {
+                if (daysRemaining == 1) messageBody = $"Your subscription will expire in {daysRemaining} day.";
+                else messageBody = $"Your subscription will expire in {daysRemaining} days";
+            }
+
             html = html.Replace("{{FullName}}", fullName);
             html = html.Replace("{{DaysRemaining}}", daysRemaining.ToString());
+            html = html.Replace("{{MessageBody}}", messageBody);
 
             var apiKey = _config["RESEND_API_KEY"];
 
@@ -136,36 +152,96 @@ namespace FitnessClub_Test.Core.Services
 
         public async Task SendEmail(string recipient, string subject, string header, string firstName, string messageBody)
         {
-            var email = _config.GetValue<string>("EmailConfiguration:email");
-            var password = _config.GetValue<string>("EmailConfiguration:pwd");
-            var host = _config.GetValue<string>("EmailConfiguration:host");
-            var port = _config.GetValue<int>("EmailConfiguration:port");
+            //var email = _config.GetValue<string>("EmailConfiguration:email");
+            //var password = _config.GetValue<string>("EmailConfiguration:pwd");
+            //var host = _config.GetValue<string>("EmailConfiguration:host");
+            //var port = _config.GetValue<int>("EmailConfiguration:port");
 
-            var smtpClient = new SmtpClient(host, port)
-            {
-                EnableSsl = true,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(email, password)
-            };
+            //var smtpClient = new SmtpClient(host, port)
+            //{
+            //    EnableSsl = true,
+            //    UseDefaultCredentials = false,
+            //    Credentials = new NetworkCredential(email, password)
+            //};
+
+            //// Load HTML template
+            //var basePath = _config["Paths:TemplateFolderPath"];
+            //var templatePath = Path.Combine(basePath, "GenericTemplate.html"); // Use a simpler generic template
+
+            //var htmlTemplate = await File.ReadAllTextAsync(templatePath);
+
+            //// Replace placeholder for message body only
+            //var htmlBody = htmlTemplate
+            //    .Replace("{{MessageBody}}", messageBody)
+            //    .Replace("{{EmailHeader}}",header)
+            //    .Replace("{{FirstName}}", firstName);
+
+            //var message = new MailMessage(email!, recipient, subject, htmlBody)
+            //{
+            //    IsBodyHtml = true
+            //};
+
+            //await smtpClient.SendMailAsync(message);
 
             // Load HTML template
-            var basePath = _config["Paths:TemplateFolderPath"];
-            var templatePath = Path.Combine(basePath, "GenericTemplate.html"); // Use a simpler generic template
-
+            var templatePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Templates",
+                "GenericTemplate.html"
+            );
+            
             var htmlTemplate = await File.ReadAllTextAsync(templatePath);
-
-            // Replace placeholder for message body only
+            
+            // Replace placeholders
             var htmlBody = htmlTemplate
                 .Replace("{{MessageBody}}", messageBody)
-                .Replace("{{EmailHeader}}",header)
+                .Replace("{{EmailHeader}}", header)
                 .Replace("{{FirstName}}", firstName);
 
-            var message = new MailMessage(email!, recipient, subject, htmlBody)
+            // Get Resend API key
+            var apiKey = _config["RESEND_API_KEY"];
+
+            // Create HTTP client
+            using var client = new HttpClient();
+
+            // Add authorization header
+            client.DefaultRequestHeaders.Add(
+                "Authorization",
+                $"Bearer {apiKey}"
+            );
+
+            // Build Resend request body
+            var body = new
             {
-                IsBodyHtml = true
+                from = "onboarding@resend.dev",
+                to = recipient,
+                subject = subject,
+                html = htmlBody
             };
 
-            await smtpClient.SendMailAsync(message);
+            // Serialize JSON
+            var json = JsonConvert.SerializeObject(body);
+
+            // Create request content
+            var content = new StringContent(
+                json,
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            // Send request to Resend API
+            var response = await client.PostAsync(
+                "https://api.resend.com/emails",
+                content
+            );
+
+            // Read response body
+            var result = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(result);
+
+            // Throw if request failed
+            response.EnsureSuccessStatusCode();
         }
 
         //used for online payment SMTP version
@@ -236,6 +312,7 @@ namespace FitnessClub_Test.Core.Services
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
+            recipient = "jardakelie@gmail.com";
             var body = new
             {
                 from = "onboarding@resend.dev",

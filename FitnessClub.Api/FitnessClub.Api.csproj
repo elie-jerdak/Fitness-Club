@@ -12,11 +12,11 @@
     <Compile Remove="Controllers\HeatmapController .cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Templates\SubscriptionReminderTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+   <ItemGroup>
+   	<Content Include="Templates\**\*">
+   		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+   	</Content>
+   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.13.0" />

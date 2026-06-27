@@ -30,10 +30,17 @@ namespace FitnessClub_Test.Core.Services
             var categories = months.Select(m => m.ToString("MMM")).ToList();
 
             var membershipFees = months.Select(m =>
-                _context.SubscriptionPayments
-                    .Where(p => p.Date.Month == m.Month && p.Date.Year == m.Year && !p.IsDeleted)
-                    .Sum(p => (decimal?)p.Amount) ?? 0
-            ).ToList();
+            {
+                var start = new DateTime(m.Year, m.Month, 1);
+                var end = start.AddMonths(1);
+
+                return _context.SubscriptionPayments
+                    .Where(p =>
+                        p.Date >= start &&
+                        p.Date < end &&
+                        !p.IsDeleted)
+                    .Sum(p => (decimal?)p.Amount) ?? 0;
+            }).ToList();
 
             var classFees = months.Select(m =>
                 (from booking in _context.Bookings

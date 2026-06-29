@@ -34,7 +34,7 @@ class Client(Base):
     Target = Column(String(255))
     MedicalHistory = Column(String(1000))
 
-    User_Id = Column(String, ForeignKey("AspNetUsers.Id"))
+    User_ID = Column(String, ForeignKey("AspNetUsers.Id"))
 
     user = relationship("AspNetUsers", back_populates="clients")
 

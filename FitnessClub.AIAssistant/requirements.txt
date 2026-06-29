@@ -8,6 +8,7 @@ textblob
 vaderSentiment
 text2emotion
 emoji==1.7.0
+nltk
 
 numpy
 regex

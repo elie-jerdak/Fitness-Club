@@ -11,6 +11,10 @@ import text2emotion as te
 import numpy as np
 import re
 
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
+
 app = FastAPI()
 
 @app.get("/health")

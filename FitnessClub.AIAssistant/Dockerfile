@@ -11,13 +11,10 @@ RUN apt-get update && apt-get install -y \
 
 # dependencies
 COPY FitnessClub.AIAssistant/requirements.txt .
-COPY FitnessClub.AIAssistant/ .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy app
 COPY . .
-
-EXPOSE 10000
 
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]

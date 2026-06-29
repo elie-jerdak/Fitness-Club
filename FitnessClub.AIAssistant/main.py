@@ -13,6 +13,10 @@ import re
 
 app = FastAPI()
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 # Initialize VADER+
 vader = SentimentIntensityAnalyzer()
 

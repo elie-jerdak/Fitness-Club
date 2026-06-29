@@ -1,6 +1,12 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
+psycopg2-binary
+python-dotenv
+
 textblob
-pydantic
-databases
+vaderSentiment
+text2emotion
+
+numpy
+regex

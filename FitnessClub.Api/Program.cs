@@ -56,7 +56,13 @@ builder.Services.AddHttpClient("FitnessApi", client =>
 builder.Services.AddHttpClient<FastApiService>((sp, client) =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
-    client.BaseAddress = new Uri(config["Urls:FastApiBaseUrl"]!);
+
+    var baseUrl = config["Urls:FastApiBaseUrl"];
+
+    if (string.IsNullOrWhiteSpace(baseUrl))
+        throw new InvalidOperationException("Missing Urls:FastApiBaseUrl in configuration");
+
+    client.BaseAddress = new Uri(baseUrl);
 });
 
 builder.Services.AddAuthentication(options =>

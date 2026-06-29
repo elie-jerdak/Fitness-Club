@@ -13,7 +13,7 @@ namespace FitnessClub_Test.Core.Services
         public FastApiService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-        }
+        } 
 
         public async Task<FastApiRatingDTO?> GetCoachRatingAsync(int coachId)
         {

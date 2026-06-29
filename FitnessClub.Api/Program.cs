@@ -116,7 +116,7 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ISubscriptionService, FitnessClub_Test.Core.Services.SubscriptionService>();
 builder.Services.AddScoped<IScanService, ScanService>();
 builder.Services.AddScoped<IPremadeProgramsService, PremadeProgramsService>();
-builder.Services.AddScoped<IFastApiService, FastApiService>();
+//builder.Services.AddScoped<IFastApiService, FastApiService>(); already registered above with HttpClient
 builder.Services.AddScoped<ICoachService, CoachService>();
 builder.Services.AddScoped<IClassUtilizationService, ClassUtilizationService>();
 builder.Services.AddScoped<IProfitLossService, ProfitLossService>();    

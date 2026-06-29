@@ -17,7 +17,8 @@ namespace FitnessClub_Test.Core.Services
 
         public async Task<FastApiRatingDTO?> GetCoachRatingAsync(int coachId)
         {
-            var response = await _httpClient.GetAsync($"http://localhost:8000/rate/{coachId}");
+            var response = await _httpClient.GetAsync($"/rate/{coachId}");
+
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<FastApiRatingDTO>();

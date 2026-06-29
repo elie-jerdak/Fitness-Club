@@ -1,12 +1,13 @@
 ﻿using FitnessClub_Test.Core.Interfaces;
 using FitnessClub_Test.Core.NewModels;
+using FitnessClub_Test.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FitnessClub_Test.Dtos;
 
 namespace FitnessClub_Test.Core.Services
 {
@@ -31,7 +32,7 @@ namespace FitnessClub_Test.Core.Services
 
             var membershipFees = months.Select(m =>
             {
-                var start = new DateTime(m.Year, m.Month, 1);
+                var start = new DateTime(m.Year, m.Month, 1, 0, 0, 0, DateTimeKind.Utc);
                 var end = start.AddMonths(1);
 
                 return _context.SubscriptionPayments
@@ -43,35 +44,41 @@ namespace FitnessClub_Test.Core.Services
             }).ToList();
 
             var classFees = months.Select(m =>
-                (from booking in _context.Bookings
-                 join c in _context.Classes on booking.ClassId equals c.Id
-                 where booking.Date.HasValue &&
-                       booking.Date.Value.Month == m.Month &&
-                       booking.Date.Value.Year == m.Year &&
-                       !booking.IsDeleted &&
-                       !c.IsDeleted
-                 select (decimal?)c.Fee
-                ).Sum() ?? 0
-            ).ToList();
+            {
+                var start = new DateTime(m.Year, m.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+                var end = start.AddMonths(1);
+
+                return (
+                    from booking in _context.Bookings
+                    join c in _context.Classes on booking.ClassId equals c.Id
+                    where booking.Date.HasValue &&
+                          booking.Date.Value >= start &&
+                          booking.Date.Value < end &&
+                          !booking.IsDeleted &&
+                          !c.IsDeleted
+                    select (decimal?)c.Fee
+                ).Sum() ?? 0;
+            }).ToList();
 
             ////////////add the premade program fee//////////////
 
             var privateBookingRevenue = months.Select(m =>
             {
+                var start = new DateOnly(m.Year, m.Month, 1);
+                var end = start.AddMonths(1);
+
                 var totalPrivateBookings = _context.AvailabilityBookings
                     .Where(b =>
-                        b.Date.Month == m.Month &&
-                        b.Date.Year == m.Year &&
+                        b.Date >= start &&
+                        b.Date < end &&
                         !b.IsDeleted)
                     .Count();
 
-                decimal bookingFee = 150m; // replace with real fee if dynamic (Add Fee to each Availability)
+                decimal bookingFee = 150m;
                 decimal gymCommissionRate = 0.20m;
 
                 var totalRevenue = totalPrivateBookings * bookingFee;
-                var gymRevenue = totalRevenue * gymCommissionRate;
-
-                return gymRevenue;
+                return totalRevenue * gymCommissionRate;
             }).ToList();
 
             var merchandiseSales = new List<decimal> { 1151, 2270, 1997 };

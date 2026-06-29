@@ -53,7 +53,7 @@ builder.Services.AddHttpClient("FitnessApi", client =>
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
 
-builder.Services.AddHttpClient<FastApiService>((sp, client) =>
+builder.Services.AddHttpClient<IFastApiService, FastApiService>((sp, client) =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
 

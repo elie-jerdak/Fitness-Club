@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # dependencies
-COPY FitnessClub_Test.AIAssistant/requirements.txt .
-COPY FitnessClub_Test.AIAssistant/ .
+COPY FitnessClub.AIAssistant/requirements.txt .
+COPY FitnessClub.AIAssistant/ .
 
 RUN pip install --no-cache-dir -r requirements.txt
 

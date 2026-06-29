@@ -11,14 +11,15 @@ namespace FitnessClub_Test.Core.Services
     {
         private readonly FitnessClubDbContext _context;
         public ClassUtilizationService(FitnessClubDbContext context)
-        { 
+        {
             _context = context;
         }
         public List<ClassUtilizationDTO> ClassUtilization()
         {
             var now = DateTime.UtcNow;
-            int currentMonth = now.Month;
-            int currentYear = now.Year;
+
+            var start = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var end = start.AddMonths(1);
 
             var result = new List<ClassUtilizationDTO>();
 
@@ -33,8 +34,8 @@ namespace FitnessClub_Test.Core.Services
                     .Where(b => !b.IsDeleted &&
                                 b.ClassId == classItem.Id &&
                                 b.Date.HasValue &&
-                                b.Date.Value.Month == currentMonth &&
-                                b.Date.Value.Year == currentYear)
+                                b.Date.Value >= start &&
+                                b.Date.Value < end)
                     .Count();
 
                 var utilizationRate = classItem.MaxOccupancy == 0 ? 0 :
@@ -51,7 +52,5 @@ namespace FitnessClub_Test.Core.Services
 
             return result;
         }
-
     }
-
 }

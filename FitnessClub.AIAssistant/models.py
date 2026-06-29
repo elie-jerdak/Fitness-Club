@@ -68,7 +68,7 @@ class Coach(Base):
 class Feedback(Base):
     __tablename__ = "Feedback"
 
-    id = Column(Integer, primary_key=True, index=True)
+    Id = Column(Integer, primary_key=True, index=True)
 
     CoachId = Column(Integer, ForeignKey("Coach.ID"))
     ClientId = Column(Integer, ForeignKey("Client.ID"))

@@ -4,18 +4,19 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 
-# system deps (safe for numpy/textblob builds)
+# system deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# dependencies
-COPY FitnessClub_Test.sln ./
-COPY FitnessClub.AIAssistant/requirements.txt .
+# copy ONLY AI project files (because root is repo root)
+COPY FitnessClub.AIAssistant/requirements.txt ./FitnessClub.AIAssistant/requirements.txt
+COPY FitnessClub.AIAssistant/ ./FitnessClub.AIAssistant/
+
+WORKDIR /app/FitnessClub.AIAssistant
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# copy app
-COPY . .
+EXPOSE 10000
 
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]

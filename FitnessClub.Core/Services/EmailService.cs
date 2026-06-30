@@ -4,14 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FitnessClub_Test.Core.Services
 {
+    /// <summary>
+    ///     recipient is hardcoded to my email for testing purposes, please change it to the actual recipient when deploying to production.
+    /// </summary>
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
@@ -210,6 +211,7 @@ namespace FitnessClub_Test.Core.Services
                 $"Bearer {apiKey}"
             );
 
+            recipient = "jardakelie@gmail.com";
             // Build Resend request body
             var body = new
             {

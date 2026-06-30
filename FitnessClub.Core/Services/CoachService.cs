@@ -393,7 +393,7 @@ namespace FitnessClub_Test.Core.Services
             return coach;
         }
 
-        public async Task<bool> FreeTimeSlotAsync(int availabilityId, int clientId)
+        public async Task<bool> FreeTimeSlotAsync(int availabilityId, int clientId) 
         {
             var client = await _context.Clients
                 .Include(c => c.User)
@@ -477,8 +477,15 @@ namespace FitnessClub_Test.Core.Services
                 Type = "Private",
                 BackgroundColor = "red",
 
-                Start = availability.Day.ToDateTime(availability.StartTime),
-                End = availability.Day.ToDateTime(availability.EndTime),
+                Start = DateTime.SpecifyKind(
+                    availability.Day.ToDateTime(availability.StartTime),
+                    DateTimeKind.Utc
+                ),
+
+                                End = DateTime.SpecifyKind(
+                    availability.Day.ToDateTime(availability.EndTime),
+                    DateTimeKind.Utc
+                ),
 
                 CoachID = availability.CoachId,
                 ClientID = clientId,

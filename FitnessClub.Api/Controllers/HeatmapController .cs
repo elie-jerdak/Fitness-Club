@@ -73,6 +73,11 @@ namespace FitnessClub_Test.Api.Controllers
             LEFT JOIN FilteredSessions fs
                 ON fs.StartTime < ts.EndTime 
                AND fs.EndTime > ts.StartTime
+            WHERE 
+                s.""TimeIn""::date >= @startDate
+                AND s.""TimeOut""::date <= @endDate
+                AND (@gender = '' OR LOWER(u.""""Gender"""") = LOWER(@gender))
+                AND (@Role = '' OR r.""""Name"""" = @Role)
         )
         SELECT 
             (to_char(StartTime, 'HH24:MI') || '-' || to_char(EndTime, 'HH24:MI')) AS ""TimeSlot"",

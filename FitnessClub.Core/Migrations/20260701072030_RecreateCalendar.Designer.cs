@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitnessClub_Test.Core.Migrations
 {
     [DbContext(typeof(FitnessClubDbContext))]
-    [Migration("20260619153331_InitialPostgres")]
-    partial class InitialPostgres
+    [Migration("20260701072030_RecreateCalendar")]
+    partial class RecreateCalendar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -817,8 +817,8 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<DateTime?>("Dob")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("Dob")
+                        .HasColumnType("date")
                         .HasColumnName("DOB");
 
                     b.Property<string>("Email")
@@ -1234,13 +1234,13 @@ namespace FitnessClub_Test.Core.Migrations
 
             modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
                 {
-                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Client")
-                        .WithMany("ClientEvents")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
+                        .WithMany()
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Coach")
-                        .WithMany("CoachEvents")
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
+                        .WithMany()
                         .HasForeignKey("CoachID")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -1508,11 +1508,7 @@ namespace FitnessClub_Test.Core.Migrations
                 {
                     b.Navigation("CheckingInOuts");
 
-                    b.Navigation("ClientEvents");
-
                     b.Navigation("Clients");
-
-                    b.Navigation("CoachEvents");
 
                     b.Navigation("Coaches");
 

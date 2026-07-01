@@ -208,6 +208,7 @@ namespace FitnessClub_Test.Core.Services
                 IsAllDay = dto.IsAllDay
             };
 
+            Console.WriteLine($"//////////////////Client ID: {ev.ClientID}");
             _context.Calendars.Add(ev);
             await _context.SaveChangesAsync();
 

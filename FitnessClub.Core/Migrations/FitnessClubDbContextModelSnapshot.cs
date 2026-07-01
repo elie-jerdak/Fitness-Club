@@ -189,87 +189,6 @@ namespace FitnessClub_Test.Core.Migrations
                     b.ToTable("Booking", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("ID");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("BackgroundColor")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ClientID")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CoachID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Color")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DaysOfWeek")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Display")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("EndRecur")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("EventTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("ExDates")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsAllDay")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsBackground")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsRecurring")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("RecurrenceRule")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Visibility")
-                        .HasColumnType("text");
-
-                    b.HasKey("ID")
-                        .HasName("Calendar_PK");
-
-                    b.HasIndex("ClientID");
-
-                    b.HasIndex("CoachID");
-
-                    b.ToTable("Calendar", (string)null);
-                });
-
             modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>
                 {
                     b.Property<int>("Id")
@@ -1229,23 +1148,6 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
-                {
-                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Client")
-                        .WithMany("ClientEvents")
-                        .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FitnessClub_Test.Core.NewModels.User", "Coach")
-                        .WithMany("CoachEvents")
-                        .HasForeignKey("CoachID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Coach");
-                });
-
             modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>
                 {
                     b.HasOne("FitnessClub_Test.Core.NewModels.User", "User")
@@ -1505,11 +1407,7 @@ namespace FitnessClub_Test.Core.Migrations
                 {
                     b.Navigation("CheckingInOuts");
 
-                    b.Navigation("ClientEvents");
-
                     b.Navigation("Clients");
-
-                    b.Navigation("CoachEvents");
 
                     b.Navigation("Coaches");
 

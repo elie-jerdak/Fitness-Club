@@ -45,8 +45,8 @@ public partial class Calendar
     public bool IsAllDay { get; set; }
 
     // Navigation properties
-    public virtual User Coach { get; set; }
-    public virtual User Client { get; set; }
+    public virtual Coach Coach { get; set; }
+    public virtual Client Client { get; set; }
 
     // Many-to-many attendees
     public virtual ICollection<User> Users { get; set; } = new List<User>();

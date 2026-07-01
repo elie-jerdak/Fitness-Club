@@ -34,13 +34,6 @@ public partial class User : IdentityUser<int>
 
     // Calendar navigation
     public virtual ICollection<Calendar> AttendingEvents { get; set; } = new List<Calendar>();
-
-    // Optional: If user is a coach, these are the events they coach
-    public virtual ICollection<Calendar> CoachEvents { get; set; } = new List<Calendar>();
-
-    // Optional: If user is a client, these are their assigned events
-    public virtual ICollection<Calendar> ClientEvents { get; set; } = new List<Calendar>();
-
     
     public virtual ICollection<CheckingInOut> CheckingInOuts { get; set; } = new List<CheckingInOut>();
 

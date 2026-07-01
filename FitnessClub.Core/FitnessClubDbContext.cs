@@ -162,14 +162,14 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
         // Calendar ↔ Coach one-to-many
         modelBuilder.Entity<Calendar>()
             .HasOne(c => c.Coach)
-            .WithMany(u => u.CoachEvents)
+            .WithMany()
             .HasForeignKey(c => c.CoachID)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Calendar ↔ Client one-to-many
         modelBuilder.Entity<Calendar>()
             .HasOne(c => c.Client)
-            .WithMany(u => u.ClientEvents)
+            .WithMany()
             .HasForeignKey(c => c.ClientID)
             .OnDelete(DeleteBehavior.Restrict);
 

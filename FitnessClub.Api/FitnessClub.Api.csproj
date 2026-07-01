@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\AuthController.cs" />
-    <Compile Remove="Controllers\HeatmapController .cs" />
   </ItemGroup>
 
    <ItemGroup>

@@ -388,7 +388,7 @@
         chartContainer.innerHTML = "";
         chartContainer.appendChild(loadingIndicator);
 
-        const url = `https://localhost:7100/api/heatmap/weekly${queryString ? "?" + queryString : ""}`;
+        const url = `https://fitnessclub-api.onrender.com/api/heatmap/weekly${queryString ? "?" + queryString : ""}`;
         const token = window.authToken;
 
         const response = await fetch(url, {

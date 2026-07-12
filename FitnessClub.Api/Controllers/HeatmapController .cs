@@ -30,70 +30,70 @@ namespace FitnessClub_Test.Api.Controllers
             [FromQuery] DateTime? endDate)
         {
             var sql = @"
-WITH TimeSlots AS (
-    SELECT '06:00:00'::time AS ""StartTime"", '07:00:00'::time AS ""EndTime""
-    UNION ALL SELECT '07:00:00'::time, '08:00:00'::time
-    UNION ALL SELECT '08:00:00'::time, '09:00:00'::time
-    UNION ALL SELECT '09:00:00'::time, '10:00:00'::time
-    UNION ALL SELECT '10:00:00'::time, '11:00:00'::time
-    UNION ALL SELECT '11:00:00'::time, '12:00:00'::time
-    UNION ALL SELECT '12:00:00'::time, '13:00:00'::time
-    UNION ALL SELECT '13:00:00'::time, '14:00:00'::time
-    UNION ALL SELECT '14:00:00'::time, '15:00:00'::time
-    UNION ALL SELECT '15:00:00'::time, '16:00:00'::time
-    UNION ALL SELECT '16:00:00'::time, '17:00:00'::time
-    UNION ALL SELECT '17:00:00'::time, '18:00:00'::time
-    UNION ALL SELECT '18:00:00'::time, '19:00:00'::time
-    UNION ALL SELECT '19:00:00'::time, '20:00:00'::time
-    UNION ALL SELECT '20:00:00'::time, '21:00:00'::time
-    UNION ALL SELECT '21:00:00'::time, '22:00:00'::time
-),
+                WITH TimeSlots AS (
+                    SELECT '06:00:00'::time AS ""StartTime"", '07:00:00'::time AS ""EndTime""
+                    UNION ALL SELECT '07:00:00'::time, '08:00:00'::time
+                    UNION ALL SELECT '08:00:00'::time, '09:00:00'::time
+                    UNION ALL SELECT '09:00:00'::time, '10:00:00'::time
+                    UNION ALL SELECT '10:00:00'::time, '11:00:00'::time
+                    UNION ALL SELECT '11:00:00'::time, '12:00:00'::time
+                    UNION ALL SELECT '12:00:00'::time, '13:00:00'::time
+                    UNION ALL SELECT '13:00:00'::time, '14:00:00'::time
+                    UNION ALL SELECT '14:00:00'::time, '15:00:00'::time
+                    UNION ALL SELECT '15:00:00'::time, '16:00:00'::time
+                    UNION ALL SELECT '16:00:00'::time, '17:00:00'::time
+                    UNION ALL SELECT '17:00:00'::time, '18:00:00'::time
+                    UNION ALL SELECT '18:00:00'::time, '19:00:00'::time
+                    UNION ALL SELECT '19:00:00'::time, '20:00:00'::time
+                    UNION ALL SELECT '20:00:00'::time, '21:00:00'::time
+                    UNION ALL SELECT '21:00:00'::time, '22:00:00'::time
+                ),
 
-FilteredSessions AS (
-    SELECT
-        s.""User_ID"",
-        s.""TimeIn""::time AS ""StartTime"",
-        s.""TimeOut""::time AS ""EndTime"",
-        TRIM(to_char(s.""TimeIn"", 'Day')) AS ""WeekDay""
-    FROM public.""CheckingInOut"" s
-    INNER JOIN public.""AspNetUsers"" u
-        ON u.""Id"" = s.""User_ID""
-    LEFT JOIN public.""AspNetUserRoles"" ur
-        ON ur.""UserId"" = u.""Id""
-    LEFT JOIN public.""AspNetRoles"" r
-        ON r.""Id"" = ur.""RoleId""
-    WHERE
-        s.""TimeIn""::date >= @startDate
-        AND s.""TimeOut""::date <= @endDate
-        AND (@gender = '' OR LOWER(u.""Gender"") = LOWER(@gender))
-        AND (@Role = '' OR r.""Name"" = @Role)
-),
+                FilteredSessions AS (
+                    SELECT
+                        s.""User_ID"",
+                        s.""TimeIn""::time AS ""StartTime"",
+                        s.""TimeOut""::time AS ""EndTime"",
+                        TRIM(to_char(s.""TimeIn"", 'Day')) AS ""WeekDay""
+                    FROM public.""CheckingInOut"" s
+                    INNER JOIN public.""AspNetUsers"" u
+                        ON u.""Id"" = s.""User_ID""
+                    LEFT JOIN public.""AspNetUserRoles"" ur
+                        ON ur.""UserId"" = u.""Id""
+                    LEFT JOIN public.""AspNetRoles"" r
+                        ON r.""Id"" = ur.""RoleId""
+                    WHERE
+                        s.""TimeIn""::date >= @startDate
+                        AND s.""TimeOut""::date <= @endDate
+                        AND (@gender = '' OR LOWER(u.""Gender"") = LOWER(@gender))
+                        AND (@Role = '' OR r.""Name"" = @Role)
+                ),
 
-CrossJoined AS (
-    SELECT
-        ts.""StartTime"",
-        ts.""EndTime"",
-        fs.""WeekDay"",
-        fs.""User_ID""
-    FROM TimeSlots ts
-    LEFT JOIN FilteredSessions fs
-        ON fs.""StartTime"" < ts.""EndTime""
-       AND fs.""EndTime"" > ts.""StartTime""
-)
+                CrossJoined AS (
+                    SELECT
+                        ts.""StartTime"",
+                        ts.""EndTime"",
+                        fs.""WeekDay"",
+                        fs.""User_ID""
+                    FROM TimeSlots ts
+                    LEFT JOIN FilteredSessions fs
+                        ON fs.""StartTime"" < ts.""EndTime""
+                       AND fs.""EndTime"" > ts.""StartTime""
+                )
 
-SELECT
-    to_char(""StartTime"", 'HH24:MI') || '-' || to_char(""EndTime"", 'HH24:MI') AS ""TimeSlot"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Monday' THEN ""User_ID"" END) AS ""Mon"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Tuesday' THEN ""User_ID"" END) AS ""Tue"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Wednesday' THEN ""User_ID"" END) AS ""Wed"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Thursday' THEN ""User_ID"" END) AS ""Thu"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Friday' THEN ""User_ID"" END) AS ""Fri"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Saturday' THEN ""User_ID"" END) AS ""Sat"",
-    COUNT(CASE WHEN ""WeekDay"" = 'Sunday' THEN ""User_ID"" END) AS ""Sun""
-FROM CrossJoined
-GROUP BY ""StartTime"", ""EndTime""
-ORDER BY ""StartTime"";
-";
+                SELECT
+                    to_char(""StartTime"", 'HH24:MI') || '-' || to_char(""EndTime"", 'HH24:MI') AS ""TimeSlot"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Monday' THEN ""User_ID"" END) AS ""Mon"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Tuesday' THEN ""User_ID"" END) AS ""Tue"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Wednesday' THEN ""User_ID"" END) AS ""Wed"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Thursday' THEN ""User_ID"" END) AS ""Thu"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Friday' THEN ""User_ID"" END) AS ""Fri"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Saturday' THEN ""User_ID"" END) AS ""Sat"",
+                    COUNT(CASE WHEN ""WeekDay"" = 'Sunday' THEN ""User_ID"" END) AS ""Sun""
+                FROM CrossJoined
+                GROUP BY ""StartTime"", ""EndTime""
+                ORDER BY ""StartTime"";
+                ";
             string genderCode = string.IsNullOrWhiteSpace(gender) ? "" : gender.Trim().Substring(0, 1).ToLower();
             var data = await _context
                 .Set<TimeSlotHeatmapDto>()

@@ -342,12 +342,18 @@
       applyFilters(); // Load initial filtered chart
     });
 
+    // function setDefaultDates() { use for development
+    //   const endDate = new Date();
+    //   const startDate = new Date();
+    //   startDate.setDate(endDate.getDate() - 6); // past 7 days
+    //   document.getElementById("startDate").value = startDate.toISOString().split('T')[0];
+    //   document.getElementById("endDate").value = endDate.toISOString().split('T')[0];
+    // }
+
+    // used for production only
     function setDefaultDates() {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(endDate.getDate() - 6); // past 7 days
-      document.getElementById("startDate").value = startDate.toISOString().split('T')[0];
-      document.getElementById("endDate").value = endDate.toISOString().split('T')[0];
+        document.getElementById("startDate").value = "2026-04-10";
+        document.getElementById("endDate").value = "2026-04-20";
     }
 
     function resetFilters() {

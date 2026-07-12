@@ -143,5 +143,22 @@
             }
         }
     </script>
+    <script>
+        async function wakeApi() {
+            try {
+                await fetch("https://fitnessclub-api.onrender.com/api/health", {
+                    method: "GET"
+                });
+
+                console.log("API is awake");
+            } catch (error) {
+                console.error("Failed to wake API:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            wakeApi();
+        });
+    </script>
 </body>
 </html>

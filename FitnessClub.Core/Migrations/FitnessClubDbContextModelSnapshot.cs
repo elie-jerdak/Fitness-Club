@@ -57,7 +57,7 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
 
@@ -166,7 +166,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnName("Client_ID");
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -187,6 +187,87 @@ namespace FitnessClub_Test.Core.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("Booking", (string)null);
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("BackgroundColor")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ClientID")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CoachID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DaysOfWeek")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Display")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EndRecur")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EventTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ExDates")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsAllDay")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsBackground")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("RecurrenceRule")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Visibility")
+                        .HasColumnType("text");
+
+                    b.HasKey("ID")
+                        .HasName("Calendar_PK");
+
+                    b.HasIndex("ClientID");
+
+                    b.HasIndex("CoachID");
+
+                    b.ToTable("Calendar", (string)null);
                 });
 
             modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>
@@ -211,10 +292,10 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeIn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("TimeOut")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
@@ -248,7 +329,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 2)
@@ -278,7 +359,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
@@ -458,8 +539,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
@@ -502,8 +583,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -672,8 +753,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("FailureReason")
                         .HasColumnType("text");
@@ -730,8 +811,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime?>("DateCreated")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date")
@@ -844,8 +925,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("Duration")
                         .HasColumnType("integer");
@@ -1146,6 +1227,23 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("FitnessClub_Test.Core.NewModels.Calendar", b =>
+                {
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FitnessClub_Test.Core.NewModels.Coach", "Coach")
+                        .WithMany()
+                        .HasForeignKey("CoachID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("FitnessClub_Test.Core.NewModels.CheckingInOut", b =>

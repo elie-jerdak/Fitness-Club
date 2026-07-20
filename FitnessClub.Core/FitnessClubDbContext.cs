@@ -122,7 +122,7 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
                 .HasColumnName("ID");
             entity.Property(e => e.ClassId).HasColumnName("Class_ID");
             entity.Property(e => e.ClientId).HasColumnName("Client_ID");
-            entity.Property(e => e.Date).HasColumnType("datetime");
+            entity.Property(e => e.Date).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Type).HasMaxLength(50);
 
@@ -180,8 +180,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
             entity.ToTable("CheckingInOut");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.TimeIn).HasColumnType("datetime");
-            entity.Property(e => e.TimeOut).HasColumnType("datetime");
+            entity.Property(e => e.TimeIn).HasColumnType("timestamp with time zone");
+            entity.Property(e => e.TimeOut).HasColumnType("timestamp with time zone");
             entity.Property(e => e.UserId).HasColumnName("User_ID");
 
             entity.HasOne(d => d.User).WithMany(p => p.CheckingInOuts)
@@ -198,7 +198,7 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CoachId).HasColumnName("Coach_ID");
-            entity.Property(e => e.EndTime).HasColumnType("datetime");
+            entity.Property(e => e.EndTime).HasColumnType("timestamp with time zone");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Name)
                 .IsRequired()
@@ -206,7 +206,7 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
             entity.Property(e => e.Fee)
                 .HasPrecision(18, 2);
             entity.Property(e => e.Reccurence).HasMaxLength(50);
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Type).HasMaxLength(50);
 
@@ -272,7 +272,7 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
 
             entity.Property(f => f.CreatedAt)
                   .HasColumnType("date")
-                  .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+                  .HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<Membership>(entity =>
@@ -303,8 +303,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
             entity.Property(e => e.Photo).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Time)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Title).HasMaxLength(100);
             entity.Property(e => e.Type).HasMaxLength(50);
             entity.Property(e => e.UserId).HasColumnName("User_ID");
@@ -324,8 +324,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Message).IsRequired();
             entity.Property(e => e.Time)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Type).HasMaxLength(50);
         });
 
@@ -396,8 +396,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
                 .HasMaxLength(10)
                 .HasDefaultValue("USD");
             entity.Property(e => e.Date)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
@@ -413,8 +413,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
         {
             entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.DateCreated)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Dob).HasColumnName("DOB");
             entity.Property(e => e.FirstName).HasMaxLength(50);
             entity.Property(e => e.Gender)
@@ -455,8 +455,8 @@ public partial class FitnessClubDbContext : IdentityDbContext<User, IdentityRole
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ClientId).HasColumnName("Client_ID");
             entity.Property(e => e.DateCreated)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Type).HasMaxLength(100);
 
             entity.HasOne(d => d.Client).WithMany(p => p.WorkoutLogs)

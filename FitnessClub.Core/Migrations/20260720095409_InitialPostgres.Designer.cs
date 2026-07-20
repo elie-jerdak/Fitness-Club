@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitnessClub_Test.Core.Migrations
 {
     [DbContext(typeof(FitnessClubDbContext))]
-    [Migration("20260701072030_RecreateCalendar")]
-    partial class RecreateCalendar
+    [Migration("20260720095409_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace FitnessClub_Test.Core.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
 
@@ -169,7 +169,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnName("Client_ID");
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -295,10 +295,10 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeIn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("TimeOut")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
@@ -332,7 +332,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 2)
@@ -362,7 +362,7 @@ namespace FitnessClub_Test.Core.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
@@ -542,8 +542,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
@@ -586,8 +586,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -756,8 +756,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("FailureReason")
                         .HasColumnType("text");
@@ -814,8 +814,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime?>("DateCreated")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date")
@@ -928,8 +928,8 @@ namespace FitnessClub_Test.Core.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("Duration")
                         .HasColumnType("integer");

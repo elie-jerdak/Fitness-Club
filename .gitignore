@@ -370,3 +370,5 @@ FodyWeavers.xsd
 **/appsettings.Production.json
 **/appsettings.deploy.json
 **/appsettings.Development.json
+
+database-backup/
